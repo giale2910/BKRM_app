@@ -59,7 +59,6 @@ export const logInHandler = (userName, password) => {
         password: password,
         role: "owner",
       });
-      console.log("responseee", response);
 
       return response;
     };
@@ -67,7 +66,7 @@ export const logInHandler = (userName, password) => {
       const rs = await logIn();
       console.log("rss");
       if (rs.access_token) {
-        localStorage.setItem("token", rs.access_token);
+        // localStorage.setItem("token", rs.access_token);
         dispatch(authActions.logIn());
 
         dispatch(loadingActions.finishLoad());
@@ -109,12 +108,13 @@ export const empLogInHandler = (userName, password) => {
     try {
       const rs = await logIn();
       if (rs.access_token) {
-        localStorage.setItem("token", rs.access_token);
+        // localStorage.setItem("token", rs.access_token);
         dispatch(authActions.logIn());
         dispatch(loadingActions.finishLoad());
         dispatch(
           infoActions.setUser({ ...rs.user, permissions: rs.permissions })
         );
+        alert(rs.user.name);
         dispatch(infoActions.setStore(rs.store));
         dispatch(infoActions.setRole(rs.role));
         dispatch(statusAction.successfulStatus("Login successfully"));

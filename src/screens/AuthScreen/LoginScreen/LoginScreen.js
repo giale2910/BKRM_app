@@ -13,7 +13,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { verifyToken, setCustomization } from "../../../store/actionCreator";
 
 import { View } from "react-native";
-
+import userAPi from "../../../api/userApi";
 import {
   Button,
   Box,
@@ -59,9 +59,8 @@ const LoginScreen = ({ navigation }) => {
   // colorScheme={`blue.${colorKey}`}
   // console.log("theme", theme )flex={1}
 
-  console.log("loginFormik.values", loginFormik.values);
   useEffect(() => {
-    dispatch(verifyToken());
+    // dispatch(verifyToken());
     dispatch(setCustomization(customization));
     // setPath(sessionStorage.getItem("BKRMprev"))
   }, [dispatch]);
@@ -150,27 +149,38 @@ const LoginScreen = ({ navigation }) => {
             )
           }
           onPress={() => {
-            if (isOwner) {
-              dispatch(
-                logInHandler(
-                  loginFormik.values.user_name,
-                  loginFormik.values.password
-                )
-              );
-            } else {
-              dispatch(
-                empLogInHandler(
-                  loginFormik.values.user_name,
-                  loginFormik.values.password
-                )
-              );
-            }
-            console.log("isLoggedIn", isLoggedIn);
+            // if (isOwner) {
+            //   dispatch(
+            //     logInHandler(
+            //       loginFormik.values.user_name,
+            //       loginFormik.values.password
+            //     )
+            //   );
+            // } else {
+            //   dispatch(
+            //     empLogInHandler(
+            //       loginFormik.values.user_name,
+            //       loginFormik.values.password
+            //     )
+            //   );
+            // }
+            // console.log("isLoggedIn", isLoggedIn);
 
-            if (isLoggedIn) {
-              navigation.navigate("Home", { name: "Jane" });
-            }
-            navigation.navigate("Home", { name: "Jane" });
+            const signIn = async () => {
+              try {
+                const res = await userAPi.signIn({
+                  user_name: loginFormik.values.user_name,
+                  password: loginFormik.values.password,
+                  role: isOwner ? "owner" : "employee",
+                });
+                alert(JSON.stringify(res));
+                // navigation.navigate("Home", { name: "Jane" });
+                //console.log(res);
+              } catch (err) {
+                console.log(err);
+              }
+            };
+            signIn();
           }}
         >
           ĐĂNG NHẬP
