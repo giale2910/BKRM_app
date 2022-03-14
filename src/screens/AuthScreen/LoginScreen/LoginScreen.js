@@ -10,6 +10,7 @@ import * as Yup from "yup";
 import useStyle from "./styles";
 // import { Ionicons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/FontAwesome";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { verifyToken, setCustomization } from "../../../store/actionCreator";
 
 import { View } from "react-native";
@@ -38,8 +39,13 @@ const LoginScreen = ({ navigation }) => {
   const styles = useStyle(theme);
   const dispatch = useDispatch();
   const customization = useSelector((state) => state.customize);
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  // const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   // const [path,setPath] = useState("/home")
+
+  const info = useSelector((state) => state.info);
+  const store_uuid = info.store.uuid;
+  const [show, setShow] = useState(false);
+  
 
   const [isOwner, setIsOwner] = useState(false);
   const loginFormik = useFormik({
@@ -53,23 +59,23 @@ const LoginScreen = ({ navigation }) => {
     }),
   });
 
-  //
-  // const { colorMode, toggleColorMode} = useColorMode();
-  // var colorKey=200;
-  // colorScheme={`blue.${colorKey}`}
-  // console.log("theme", theme )flex={1}
-
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   useEffect(() => {
-    // dispatch(verifyToken());
-    dispatch(setCustomization(customization));
-    // setPath(sessionStorage.getItem("BKRMprev"))
-  }, [dispatch]);
-  console.log("isOwner", isOwner);
+    if(isLoggedIn){
+      navigation.navigate("Home", { name: "Jane" });
+    }
+  }, []);
+  useEffect(() => {
+    if(isLoggedIn){
+      navigation.navigate("Home", { name: "Jane" });
+    }
+  }, [isLoggedIn]);
+
   return (
     <Center flex={1} bg={`${theme.customization.primaryColor}.${100}`}>
       <Container
-        h="96%"
-        w="95%"
+        h="93%"
+        w="93%"
         style={{ justifyContent: "center", alignItems: "center" }}
         px={5}
       >
@@ -116,8 +122,11 @@ const LoginScreen = ({ navigation }) => {
               value={loginFormik.values.password}
               onChangeText={loginFormik.handleChange("password")}
               onBlur={loginFormik.handleBlur("password")}
+              type={show ? "text" : "password"} 
+              h={12}
+              InputRightElement={<Box pr={2} pt={5} ><MaterialIcons name={show ? "visibility" : "visibility-off"} size={20} mr="10" color="grey" onPress={() => setShow(!show)} /> </Box>} 
             />
-
+          
             <FormControl.ErrorMessage
               leftIcon={<Icon name="warning" color="red" size={15} />}
             >
@@ -149,38 +158,39 @@ const LoginScreen = ({ navigation }) => {
             )
           }
           onPress={() => {
-            // if (isOwner) {
-            //   dispatch(
-            //     logInHandler(
-            //       loginFormik.values.user_name,
-            //       loginFormik.values.password
-            //     )
-            //   );
-            // } else {
-            //   dispatch(
-            //     empLogInHandler(
-            //       loginFormik.values.user_name,
-            //       loginFormik.values.password
-            //     )
-            //   );
-            // }
-            // console.log("isLoggedIn", isLoggedIn);
-
-            const signIn = async () => {
-              try {
-                const res = await userAPi.signIn({
-                  user_name: loginFormik.values.user_name,
-                  password: loginFormik.values.password,
-                  role: isOwner ? "owner" : "employee",
-                });
-                alert(JSON.stringify(res));
-                // navigation.navigate("Home", { name: "Jane" });
-                //console.log(res);
-              } catch (err) {
-                console.log(err);
-              }
-            };
-            signIn();
+            if (isOwner) {
+              dispatch(
+                logInHandler(
+                  loginFormik.values.user_name,
+                  loginFormik.values.password
+                )
+              );
+            } else {
+              dispatch(
+                empLogInHandler(
+                  loginFormik.values.user_name,
+                  loginFormik.values.password
+                )
+              );
+            }
+           
+            console.log("hello")
+          //   const signIn = async () => {
+          //     try {
+          //       const res = await userAPi.signIn({
+          //         user_name: loginFormik.values.user_name,
+          //         password: loginFormik.values.password,
+          //         role: isOwner ? "owner" : "employee",
+          //       });
+          //       alert(JSON.stringify(res));
+          //       // navigation.navigate("Home", { name: "Jane" });
+          //       //console.log(res);
+          //     } catch (err) {
+          //       console.log(err);
+          //     }
+          //   };
+          //   signIn();
+          
           }}
         >
           ĐĂNG NHẬP
@@ -201,3 +211,14 @@ export default LoginScreen;
 //       </Text>
 //       <Button  bg={`blue.${colorKey}`} onPress={() =>  navigation.navigate('Home', { name: 'Jane' }) }>Login</Button>
 //       <Button onPress={toggleColorMode}>Toggle</Button>
+
+
+
+  
+
+  //
+  // const { colorMode, toggleColorMode} = useColorMode();
+  // var colorKey=200;
+  // colorScheme={`blue.${colorKey}`}
+  // console.log("theme", theme )flex={1}
+

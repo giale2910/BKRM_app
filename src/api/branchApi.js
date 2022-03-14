@@ -6,6 +6,7 @@ const branchApi = {
   },
   getBranches: (storeUuid) => {
     const url = `/stores/${storeUuid}/branches`;
+    // alert(JSON.stringify(axiosClient.get(url)))
     return axiosClient.get(url);
   },
   getAllBranches: (storeUuid) => {

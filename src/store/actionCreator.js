@@ -7,6 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 // import { pink, blue, grey } from "@material-ui/core/colors";
 import { statusAction } from "./slice/statusSlice";
+// import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// async function save(key, value) {
+//   await SecureStore.setItemAsync(key, value);
+// }
+
 // import { connect } from "http2";
 export const verifyToken = () => {
   return async (dispatch) => {
@@ -49,26 +56,38 @@ export const verifyToken = () => {
     }
   };
 };
+
+// const storeData = async (value) => {
+//   try {
+//     await AsyncStorage.setItem('@token', value)
+//   } catch (e) {
+//     // saving error
+//   }
+// }
+
 export const logInHandler = (userName, password) => {
   return async (dispatch) => {
     dispatch(loadingActions.startLoad());
     const logIn = async () => {
-      console.log("response");
       const response = await userApi.signIn({
         user_name: userName,
         password: password,
         role: "owner",
       });
 
+
+
       return response;
     };
     try {
       const rs = await logIn();
-      console.log("rss");
-      if (rs.access_token) {
-        // localStorage.setItem("token", rs.access_token);
-        dispatch(authActions.logIn());
+      // console.log("rss",rs);
+      if (rs.data.access_token) {
+        // console.log("token")
+        // localStorage.setItem("token", rs.data);
+        await AsyncStorage.setItem('@token', rs.data.access_token)
 
+        dispatch(authActions.logIn());
         dispatch(loadingActions.finishLoad());
         dispatch(
           infoActions.setUser({
@@ -82,8 +101,10 @@ export const logInHandler = (userName, password) => {
             ],
           })
         );
-        dispatch(infoActions.setStore(rs.store));
-        dispatch(infoActions.setRole(rs.role));
+        // dispatch(infoActions.setStore(rs.store));
+        // dispatch(infoActions.setRole(rs.role));
+        dispatch(infoActions.setStore(rs.data.store));
+        dispatch(infoActions.setRole(rs.data.role));
         dispatch(statusAction.successfulStatus("Login successfully"));
       }
     } catch (error) {
@@ -107,16 +128,21 @@ export const empLogInHandler = (userName, password) => {
     };
     try {
       const rs = await logIn();
-      if (rs.access_token) {
+      // if (rs.access_token) {
+        if (rs.data.access_token) {
         // localStorage.setItem("token", rs.access_token);
         dispatch(authActions.logIn());
         dispatch(loadingActions.finishLoad());
         dispatch(
-          infoActions.setUser({ ...rs.user, permissions: rs.permissions })
+          // infoActions.setUser({ ...rs.user, permissions: rs.permissions })
+          infoActions.setUser({ ...rs.data.user, permissions: rs.data.permissions })
+
         );
-        alert(rs.user.name);
-        dispatch(infoActions.setStore(rs.store));
-        dispatch(infoActions.setRole(rs.role));
+        // alert(rs.user.name);
+        // dispatch(infoActions.setStore(rs.store));
+        // dispatch(infoActions.setRole(rs.role));
+        dispatch(infoActions.setStore(rs.data.store));
+        dispatch(infoActions.setRole(rs.data.role));
         dispatch(statusAction.successfulStatus("Login successfully"));
       }
     } catch (error) {

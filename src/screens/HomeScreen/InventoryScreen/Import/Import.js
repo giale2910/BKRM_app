@@ -12,15 +12,29 @@ import {
     HStack,
     Divider,
     Icon,
+    Container,
   } from "native-base";
-const Import = () => {
+  import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+  import NavBar from "../../../../components/NavBar/NavBar"
+import SearchScreen from "../../../SearchScreen/SearchScreen"
+import BarCodeScreen from "../../../BarCodeScreen/BarCodeScreen"
+
+import ImportScreen from "./ImportScreen/ImportScreen"
+const Stack = createNativeStackNavigator();
+
+const Import= ({navigation}) => {
   return (
-    <Center>
-    <Text mt="12" fontSize="18">
-      This is Import page.
-    </Text>
-  </Center>
+    <>
+  <Stack.Navigator>  
+      <Stack.Screen name="ImportScreen"  component={ImportScreen}  options={{ headerShown: false}} />   
+      <Stack.Screen name="SearchScreen" component={SearchScreen}  options={{ headerShown: false, }} />
+      <Stack.Screen name="BarCodeScreen" component={BarCodeScreen}  options={{ headerShown: false, }} />
+  </Stack.Navigator>
+  </>
   )
 }
 
 export default Import
+
+

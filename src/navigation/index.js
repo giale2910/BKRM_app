@@ -16,7 +16,7 @@ const MyStack = () => {
         <NativeBaseProvider theme={theme()}  >
           <Stack.Navigator>  
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false}}  />
-            <Stack.Screen name="Home"  component={HomeScreen}  options={{ headerShown: false}} />   
+            <Stack.Screen name="Home"  component={HomeScreen}  options={{ headerShown: false,headerLeft: ()=> null}}  />   
           </Stack.Navigator>
         </NativeBaseProvider>
     </NavigationContainer> 

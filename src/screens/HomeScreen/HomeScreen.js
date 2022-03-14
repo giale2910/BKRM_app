@@ -12,7 +12,8 @@ import {
   HStack,
   Divider,
   Icon,
-  View
+  View,
+  AlertDialog
 } from "native-base";
 import { Image } from 'react-native';
 import { createDrawerNavigator,DrawerContentScrollView } from '@react-navigation/drawer';
@@ -67,6 +68,18 @@ import webIcon from "../../assets/img/icon/www.png";
 import settingIcon from "../../assets/img/icon/setting.png"
 import deliveryIcon from "../../assets/img/icon/history3.png";
 
+
+
+//
+
+// import InputLabel from "@mui/material/InputLabel";
+// import MenuItem from "@mui/material/MenuItem";
+// import FormControl from "@mui/material/FormControl";
+// import Select from "@mui/material/Select";
+import branchApi from "../../api/branchApi";
+import { infoActions } from "../../store/slice/infoSlice";
+import { Select } from "native-base";
+import { useDispatch, useSelector } from "react-redux";
 
 const Drawer = createDrawerNavigator();
 
@@ -285,35 +298,17 @@ const reportModule = {
   ],
 };
 
-
-
-const getIcon = (screenName) => {
-  switch (screenName) {
-    case "Inbox":
-      return "email";
-    case "Outbox":
-      return "send";
-    case "Favorites":
-      return "heart";
-    case "Archive":
-      return "archive";
-    case "Trash":
-      return "trash-can";
-    case "Spam":
-      return "alert-circle";
-    default:
-      return undefined;
-  }
-};
 const menuItems = [salesModule, inventoryModule, hrModule, reportModule];
 
 function CustomDrawerContent(props) {
-  console.log("props",props.navigation)
+  const infoDetail = useSelector((state) => state.info);
+
   return (
     <DrawerContentScrollView {...props} safeArea>
+      {/* <BranchSelectAppBar store_uuid={infoDetail.store.uuid} /> */}
       <VStack space="3" my="3" mx="3">
-        {menuItems.map(((module) =>(
-            <MenuGroup item={module} indexOpen={props.state.index} navigation={props.navigation}/>
+        {menuItems.map(((module, index) =>(
+            <MenuGroup key={index} item={module} indexOpen={props.state.index} navigation={props.navigation}/>
         )))}
       </VStack>
     </DrawerContentScrollView>
@@ -324,12 +319,12 @@ const MenuGroup = (props) =>{
   const { item,indexOpen ,navigation} = props;
 
   return(
-    <VStack space="1">
+    <VStack space="2">
       <Text fontWeight="500" fontSize="14" px="2" color="gray.500">
         {item.title}
       </Text>
       {item.children.map((menuItem, index) => (
-        <MenuItem  item={menuItem}  collapse={true} indexOpen={indexOpen} navigation={navigation}/>
+        <MenuItem key={menuItem.id} item={menuItem}  collapse={true} indexOpen={indexOpen} navigation={navigation}/>
       ))}
 
      <Center><Divider w="90%"/></Center>
@@ -341,11 +336,11 @@ const MenuItem  = ({item,indexOpen,navigation}) =>{
   return  (
     <Pressable 
         key={item.id}
-        mx="1"px="2" py="3" rounded="lg"
+        mx="1"px="2" py="2.5" rounded="lg"
         bg={ item.id   === indexOpen +1? "secondary.100"  : "transparent" }
         onPress={(event) => {  navigation.navigate(item.name); }}
       >
-        <HStack space="5" alignItems="center">
+        <HStack space="4" alignItems="center">
           <Image style={{width:27, height:27}} source={item.icon} />
           
           <Text  fontSize="md" fontWeight={ item.id  === indexOpen +1 ? "700" : null }    color={ item.id   === indexOpen +1 ? "secondary.500" : "gray.700" } >
@@ -356,18 +351,51 @@ const MenuItem  = ({item,indexOpen,navigation}) =>{
   )
 }
 const HomeScreen = ({ navigation, route }) => {
+  const infoDetail = useSelector((state) => state.info);
+  const dispatch = useDispatch();
+  const loadingData = async () => {
+    try {
+      let response = await branchApi.getBranches(infoDetail.store.uuid);
+      // setBranches(response.data);
+      // setSelectedBranch(response.data[0]);
+      dispatch(
+        infoActions.setBranch({
+          // uuid: response.data[0].uuid,
+          // name: response.data[0].name,
+          uuid: response.data.data[0].uuid,
+          name: response.data.data[0].name,
+        })
+      );
+
+    }catch(err) {
+      // alert(JSON.stringify(err))
+    }
+  };
+
+  React.useEffect(() => {
+    loadingData(); 
+   
+
+  }, [infoDetail.store.uuid]);
+
+  React.useEffect(() => {
+    loadingData(); 
+
+  }, []);
+
+ 
   return (
     <Drawer.Navigator
-      screenOptions={{ drawerStyle: {  width: 240, } }}
+      screenOptions={{ drawerStyle: {  width: 235, } }}
       drawerContent={(props) => <CustomDrawerContent {...props} />
     }
-    //  initialRouteName="Home"
+     initialRouteName="Inventory"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng"}}/>
       <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn"}} />
       <Drawer.Screen name="InvoiceReturn" component={InvoiceReturn} options={{ title: "Đơn Trả"}}/>
-      <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng"}} />
-      <Drawer.Screen name="Inventory" component={Inventory} options={{ title: "Sản phẩm"}}/>
+      <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng",headerShown: false,unmountOnBlur:true}} />
+      <Drawer.Screen name="Inventory" component={Inventory} options={{ title: "Sản phẩm",headerShown: false,unmountOnBlur:true}}/>
       <Drawer.Screen name="InventoryOrder" component={InventoryOrder} options={{ title: "Đơn Nhập Hàng"}}/>
       <Drawer.Screen name="InventoryReturnOrder" component={InventoryReturnOrder} options={{ title: "Đơn Trả Hàng Nhập"}}/>
       <Drawer.Screen name="OrderProductList" component={OrderProductList} options={{ title: "Đặt Hàng"}}/>
@@ -390,47 +418,104 @@ const HomeScreen = ({ navigation, route }) => {
 export default HomeScreen
 
 
+// function BranchSelectAppBar({ store_uuid }) {
+//   const [selectedBranch, setSelectedBranch] = React.useState({});
+//   const [branches, setBranches] = React.useState([]);
+//   const dispatch = useDispatch();
+
+//   const handleChange = (value) => {
+//     setSelectedBranch(value);
+//     dispatch(
+//       infoActions.setBranch({
+//         uuid: value.uuid,
+//         name: value.name,
+//       })
+//     );
+//   };
+
+//   const loadingData = async () => {
+//     let response = await branchApi.getBranches(store_uuid);
+//     setBranches(response.data);
+//     setSelectedBranch(response.data[0]);
+//     dispatch(
+//       infoActions.setBranch({
+//         uuid: response.data[0].uuid,
+//         name: response.data[0].name,
+//       })
+//     );
+//   };
+
+//   React.useEffect(() => {
+//     loadingData();
+//   }, [store_uuid]);
+
+//   const renderMenuItem = () => {
+//     return branches.map((branch) => {
+//       // return <MenuItem value={branch}>{branch.name}</MenuItem>;
+//       return <Select.Item label={branch.name} value={branch} />
+//     });
+//   };
 
 
+//   let [service, setService] = React.useState("");
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <Box px="4">
-          <Text bold color="gray.700">
-            Chủ cửa hàng
-          </Text>
-          <Text fontSize="14" mt="1" color="gray.500" fontWeight="500">
-            Lý Quốc Hải
-          </Text>
-        </Box> */}
-
-
-// function Home({ navigation }) {
 //   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Button
-//         onPress={() => navigation.navigate('Login')}
-//         title="Go to notifications"
-//       />
-//     </View>
+//     // <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+//     //   <InputLabel>Chi nhánh</InputLabel>
+//     //   <Select value={selectedBranch} label="Chi nhánh" onChange={handleChange}>
+//     //     {renderMenuItem()}
+//     //   </Select>
+//     // </FormControl>
+    
+//         <Select selectedValue={selectedBranch} minWidth="200"  placeholder="Chi nhánh" _selectedItem={{ bg: "teal.600", endIcon: <Icon name="check" size="5" /> }} mt={1}
+//          onValueChange={handleChange}>
+//          {renderMenuItem()}
+//         </Select>
+
 //   );
 // }
 
-// function NotificationsScreen({ navigation }) {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Button onPress={() => navigation.goBack()} title="Go back home" />
-//     </View>
-//   );
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// {/* <Box px="4">
+//           <Text bold color="gray.700">
+//             Chủ cửa hàng
+//           </Text>
+//           <Text fontSize="14" mt="1" color="gray.500" fontWeight="500">
+//             Lý Quốc Hải
+//           </Text>
+//         </Box> */}
+
+
+// // function Home({ navigation }) {
+// //   return (
+// //     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+// //       <Button
+// //         onPress={() => navigation.navigate('Login')}
+// //         title="Go to notifications"
+// //       />
+// //     </View>
+// //   );
+// // }
+
+// // function NotificationsScreen({ navigation }) {
+// //   return (
+// //     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+// //       <Button onPress={() => navigation.goBack()} title="Go back home" />
+// //     </View>
+// //   );
+// // }

@@ -29,6 +29,8 @@ const initialUserInfoSlice = {
   branch: {
     uuid: "",
     name: "",
+    // uuid: "0e41563b-7825-4fc2-a4fa-77e092f8ffc2",
+    // name: "asas"
   },
   role: "",
 };
