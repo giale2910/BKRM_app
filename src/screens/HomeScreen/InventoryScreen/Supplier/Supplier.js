@@ -1,25 +1,20 @@
 import React from 'react'
-import {
-    NativeBaseProvider,
-    Button,
-    Box,
-    HamburgerIcon,
-    Pressable,
-    Heading,
-    VStack,
-    Text,
-    Center,
-    HStack,
-    Divider,
-    Icon,
-  } from "native-base";
-const Supplier = () => {
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import SupplierScreen from "./SupplierScreen/SupplierScreen"
+import SupplierDetailScreen from "./SupplierDetailScreen/SupplierDetailScreen"
+import AddSupplier from "./AddSupplier/AddSupplier"
+
+
+const Stack = createNativeStackNavigator();
+
+const Supplier = ({navigation}) => {
   return (
-    <Center>
-    <Text mt="12" fontSize="18">
-      This is Supplier page.
-    </Text>
-  </Center>
+    <Stack.Navigator>  
+      <Stack.Screen name="SupplierScreen"  component={SupplierScreen}  options={{ headerShown: false}} />   
+      <Stack.Screen name="SupplierDetailScreen" component={SupplierDetailScreen}  options={{ headerShown: false, }} />
+      <Stack.Screen name="AddSupplier" component={AddSupplier}  options={{ headerShown: false, }} />
+  </Stack.Navigator>
   )
 }
 

@@ -389,7 +389,7 @@ const HomeScreen = ({ navigation, route }) => {
       screenOptions={{ drawerStyle: {  width: 235, } }}
       drawerContent={(props) => <CustomDrawerContent {...props} />
     }
-     initialRouteName="Customer"
+     initialRouteName="Supplier"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng"}}/>
       <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn"}} />

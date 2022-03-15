@@ -8,15 +8,14 @@ import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons  from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesignIcon from "react-native-vector-icons/AntDesign";
 
-
-import customerApi from '../../../../../api/customerApi'
+//import project
+import supplierApi from '../../../../../api/supplierApi'
 import BackNavBar from '../../../../../components/NavBar/BackNavBar';
 import PopUpDelete from "../../../../../components/PopUp/PopUpDelete"
 import {callPhone} from "../../../../../util/util"
 
 
-const CustomerDetailScreen = ({navigation, route}) => {
-  // const {row} = route.params;
+const SupplierDetailScreen = ({navigation, route}) => {
   const [row, setRow] = React.useState(route.params.row);
 
   const info = useSelector(state => state.info)
@@ -34,12 +33,14 @@ const CustomerDetailScreen = ({navigation, route}) => {
 
 
   const handleDeleteCustomer = async () => {
-    console.log(store_uuid, row.uuid);
+    // console.log(store_uuid, row.uuid);
+    console.log("hello1")
     try {
-      const response = await customerApi.deleteCustomer(store_uuid, row.uuid);
-      // dispatch(statusAction.successfulStatus("Xóa thành công"));
-      // props.parentProps.onReload();
-      onClose()
+      console.log("hello1")
+      const response = await supplierApi.deleteSupplier(store_uuid, row.uuid);
+      console.log("hello2")
+      // // dispatch(statusAction.successfulStatus("Xóa thành công"));
+      // alert("hello2")
       navigation.goBack();
     } catch (error) {
       console.log(error);
@@ -49,23 +50,19 @@ const CustomerDetailScreen = ({navigation, route}) => {
 
   return (
     <>
-    <BackNavBar navigation={navigation} title={"Chi tiết khách hàng"} > 
+    <BackNavBar navigation={navigation} title={"Chi tiết nhà cung cấp"} > 
           <MaterialCommunityIcons name="delete-forever-outline"  size={25}  color="#424242"  onPress={() => setIsOpen(!isOpen)} />
-          <AntDesignIcon  name="edit"  size={25}  color="#424242"  onPress={() => navigation.navigate("AddCustomer", { isEdit: true , row:row})} />
+          <AntDesignIcon  name="edit"  size={25}  color="#424242"  onPress={() => navigation.navigate("AddSupplier", { isEdit: true , row:row})} />
     </BackNavBar>
     <Divider mt={-3} mb="6"/>
     <VStack mx={5} space={3}>
-      {/* <Avatar bg="primary.500"  mb="2"> {row.name[0].toUpperCase()} </Avatar> */}
-      {row.img_url?<Avatar bg="primary.500" source={{uri: row.img_url }} > {row.name[0].toUpperCase()} </Avatar>
-            : <Avatar bg="primary.500" > {row.name[0].toUpperCase()} </Avatar>
-            // <Avatar bg="primary.500"w={55} h={55} source={ require("../../../../../assets/ava//ava6.png") }>  </Avatar>  
-       }  
+
       <HStack  alignItems='center'>
-        <Text w="40%" color='grey'>Mã khách hàng</Text>
-        <Text fontSize={16} >{row.customer_code}</Text>
+        <Text w="40%" color='grey'>Mã nhà cung cấp</Text>
+        <Text fontSize={16} >MÃ{row.supplier_code}</Text>
       </HStack> 
       <HStack>
-        <Text w="40%" color='grey'>Tên khách hàng</Text>
+        <Text w="40%" color='grey'>Tên nhà cung cấp</Text>
         <Text fontSize={16} >{row.name}</Text>
       </HStack> 
       <HStack>
@@ -84,12 +81,12 @@ const CustomerDetailScreen = ({navigation, route}) => {
         <Text fontSize={16}  >{row.address}</Text>
       </HStack> 
       <HStack>
-        <Text w="40%"color='grey' >Tích điểm</Text>
-        <Text fontSize={16}  >TÍCH ĐIỂM</Text>
-      </HStack> 
-      <HStack>
         <Text w="40%"color='grey' >Thông tin thanh toán</Text>
         <Text fontSize={16}  >{row.payment_info}</Text>
+      </HStack> 
+      <HStack>
+        <Text w="40%"color='grey' >Công ty</Text>
+        <Text fontSize={16}  >{row.company}</Text>
       </HStack> 
       <HStack>
         <Text w="40%"color='grey' >Còn nợ</Text>
@@ -101,9 +98,9 @@ const CustomerDetailScreen = ({navigation, route}) => {
 
     
 
-    {isOpen?<PopUpDelete title={"Xoá khách hàng"} content="Bạn có chắc muốn xoá vĩnh viễn khách hàng" partnerName={row.name} handleDelete={handleDeleteCustomer}isOpen={isOpen} setIsOpen={setIsOpen}/>:null}
+    {isOpen?<PopUpDelete title={"Xoá nhà cung cấp"} content="Bạn có chắc muốn xoá vĩnh viễn nhà cung cấp" partnerName={row.name} handleDelete={handleDeleteCustomer}isOpen={isOpen} setIsOpen={setIsOpen}/>:null}
     </>
   )
 }
 
-export default CustomerDetailScreen
+export default SupplierDetailScreen

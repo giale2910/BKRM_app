@@ -1,35 +1,20 @@
 import React from 'react'
-import {
-    NativeBaseProvider,
-    Button,
-    Box,
-    HamburgerIcon,
-    Pressable,
-    Heading,
-    VStack,
-    Text,
-    Center,
-    HStack,
-    Divider,
-    Icon,
-    Container,
-  } from "native-base";
+import { useSelector} from 'react-redux'
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+import { Button, VStack} from "native-base";
 
 //import project
 import customerApi from "../../../../../api/customerApi";
-import {useDispatch, useSelector} from 'react-redux'
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import BackNavBar from '../../../../../components/NavBar/BackNavBar';
-
-import { statusAction } from "../../../../../store/slice/statusSlice";
 import FormInput from "../../../../../components/FormInput/FormInput"
+
 
 const AddCustomer = ({navigation, route}) => {
     const info = useSelector(state => state.info)
     const {row,isEdit} = route.params;
     const store_uuid = info.store.uuid
-    const dispatch = useDispatch()
 
     const customerFormik = useFormik({
         initialValues: {

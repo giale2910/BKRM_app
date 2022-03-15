@@ -1,0 +1,1 @@
+global.limitPerLoad = 30;
