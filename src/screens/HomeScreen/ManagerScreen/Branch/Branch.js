@@ -16,7 +16,7 @@ import {
 const Branch = () => {
   return (
     <Center>
-    <Text mt="12" fontSize="18">
+    <Text mt="12" fontSize={18}>
       This is Branch page.
     </Text>
   </Center>

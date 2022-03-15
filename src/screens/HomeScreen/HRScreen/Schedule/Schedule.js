@@ -16,7 +16,7 @@ import {
 const Schedule = () => {
   return (
     <Center>
-    <Text mt="12" fontSize="18">
+    <Text mt="12" fontSize={18}>
       This is Schedule page.
     </Text>
   </Center>

@@ -16,7 +16,7 @@ import {
 const Setting = () => {
   return (
     <Center>
-    <Text mt="12" fontSize="18">
+    <Text mt="12" fontSize={18}>
       This is Setting page.
     </Text>
   </Center>

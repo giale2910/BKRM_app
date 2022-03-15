@@ -41,27 +41,14 @@ const ImportScreen = ({navigation}) => {
   const branch = info.branch;
   const user_uuid = useSelector((state) => state.info.user.uuid);
 
-
-  // const [cartList, setCartList] = React.useState([
-  //   {
-  //     supplier: null,
-  //     cartItem: [],
-  //     total_amount: 0,
-  //     paid_amount: 0,
-  //     discount: 0,
-  //     payment_method: "cash",
-  //   },
-  // ]);
-
-  const loadLocalStorage = async() => {
-    const importData= await  AsyncStorage.getItem('@importListData')
-    // alert(importData)
-    if (importData) {
-      const data = JSON.parse(importData);
+  const loadLocalStorage =async () => {
+    if (await  AsyncStorage.getItem('@importListData')) {
+      const data = await  AsyncStorage.getItem('@importListData')
       if (data.user_uuid === user_uuid) {
         return data.cartList;
       }
     }
+
     return [
       {
         supplier: null,
@@ -75,13 +62,56 @@ const ImportScreen = ({navigation}) => {
   };
   const [cartList, setCartList] = React.useState(loadLocalStorage());
 
-  useEffect(() => {
-    (async () =>  await AsyncStorage.setItem('@importListData', JSON.stringify({ user_uuid: user_uuid, cartList: cartList })))();
-  }, [cartList]);
+  // const loadLocalStorage = async() => {
+  //   const importData= await  AsyncStorage.getItem('@importListData')
+  //   // console.log("importData.cartList",JSON.stringify(importData))
 
-  useEffect(() => {
-    (async () => loadLocalStorage())();
-  }, []);
+  //   if (importData) {
+  //     const data = JSON.parse(importData);
+  //     if (data?.user_uuid === user_uuid) {
+  //       return data.cartList;
+  //       // setHello(["true", "true"])
+  //       // alert(hello)
+  //       // return setCartList(data.cartList)
+  //       return [{name:"true"}, {name:"true"}]
+  //     }
+  //   }
+   
+  //   // setCartList([  {
+  //   //   supplier: null,
+  //   //   cartItem: [],
+  //   //   total_amount: 0,
+  //   //   paid_amount: 0,
+  //   //   discount: 0,
+  //   //   payment_method: "cash",
+  //   // }])
+  //   return [
+  //     {
+  //       supplier: null,
+  //       cartItem: [],
+  //       total_amount: 0,
+  //       paid_amount: 0,
+  //       discount: 0,
+  //       payment_method: "cash",
+  //     },
+  //   ];
+  //   return [{name:"true"}, {name:"true"}]
+  // };
+  // // const [cartList, setCartList] = React.useState(loadLocalStorage());
+  // const [hello, setHello] = React.useState();
+
+  // useEffect(() => {
+  //   (async () =>  await AsyncStorage.setItem('@importListData', JSON.stringify({ user_uuid: user_uuid, cartList: cartList })))();
+  // }, [cartList]);
+
+  // useEffect(() => {
+  //   (async () => loadLocalStorage())();
+  // }, []);
+  // const [cartList, setCartList] = React.useState(loadLocalStorage());
+
+ console.log("hello",cartList)
+
+
 
   //// ----------II. FUNCTION
   // 1.Cart
@@ -391,12 +421,22 @@ const ImportScreen = ({navigation}) => {
 
 
 
+// console.log("mycartList",cartList)
 
   return (
     <>
-    <NavBar  navigation={navigation} title={"Nhập hàng"} number={selectedIndex} selectedIndex={selectedIndex} cartList={cartList}handleChoose={handleChoose}handleDelete={handleDelete} handleAdd={handleAdd}/>
+    <NavBar  navigation={navigation} title={"Nhập hàng"} number={selectedIndex} >
+        {/* {cartList? <ChangeCartBtn 
+              selectedIndex={selectedIndex}
+              cartList={cartList}
+              handleChoose={handleChoose}
+              handleDelete={handleDelete}
+              handleAdd={handleAdd}
+              isCart={ false}
+            />:null} */}
+    </NavBar>
     <Center>
-        <Pressable onPress={() =>  navigation.navigate('SearchScreen', { name:"Jane" }) }>   
+        <Pressable onPress={() =>  navigation.navigate('SearchScreen', { navcartList:cartList,selectedIndex:selectedIndex }) }>   
             <Box borderWidth="1"  borderColor="coolGray.200"borderRadius="20" w="92%" h="12" justifyContent="center" px="2">
                 <HStack >
                   <MaterialIcons  name="search"  size={25}  color="grey" /> 
@@ -409,7 +449,15 @@ const ImportScreen = ({navigation}) => {
         </Pressable>
     </Center>
     <ScrollView style={styles.scrollView}>
-      
+      <Text>hello</Text>
+          {cartList[selectedIndex]?.cartItem?.map((row, index)=>{
+              return(
+                <HStack>
+                  <Text>{row.name}</Text>
+                  <Text>{row.quantity}</Text>
+                </HStack>
+              )
+          })}
 
     </ScrollView>
   </>

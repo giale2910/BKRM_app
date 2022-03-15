@@ -157,7 +157,7 @@ const inventoryModule = {
       // icon2: icons1.SyncProblemTwoToneIcon,
     },
     {
-      id: 9,
+      id: 8,
       title: "Đặt Hàng",
       url: "/home/inventory/order-list",
       name:"OrderProductList",
@@ -167,7 +167,7 @@ const inventoryModule = {
       // icon2: icons1.AddIcCallTwoToneIcon,
     },
     {
-      id: 11,
+      id: 9,
       title: "Kiểm Kho",
       url: "/home/inventory/check-history",
       name:"CheckHistory",
@@ -177,7 +177,7 @@ const inventoryModule = {
       // icon2: icons1.FindInPageTwoToneIcon,
     },
     {
-      id: 12,
+      id: 10,
       title: "Nhà Cung Cấp",
       // url: "/home/inventory/supplier",
       name:"Supplier",
@@ -192,7 +192,7 @@ const deliveryModule = {
   title: "Giao hàng",
   children: [
     {
-      id: 13,
+      id: 11,
       title: "Đơn giao hàng",
       name:"Delivery",
       name:"Cart",
@@ -208,7 +208,7 @@ const hrModule = {
   title: "Nhân Sự",
   children: [
     {
-      id: 14,
+      id: 11,
       title: "Nhân Viên",
       name:"Employee",
       // url: "/home/hr/employee",
@@ -218,7 +218,7 @@ const hrModule = {
       // icon2: icons1.AccountCircleTwoToneIcon,
     },
     {
-      id: 15,
+      id: 12,
       title: "Ca Làm Việc",
       name:"Schedule",
       // url: "/home/hr/schedule",
@@ -233,7 +233,7 @@ const reportModule = {
   title: "Quản Lý",
   children: [
     {
-      id: 16,
+      id: 13,
       title: "Lịch Sử Hoạt Động",
       name:"History",
       // url: "/home/manager/history",
@@ -243,7 +243,7 @@ const reportModule = {
       // icon2: icons1.RestoreTwoToneIcon,
     },
     {
-      id: 17,
+      id: 14,
       title: "Cửa Hàng",
       name:"Branch",
       // url: "/home/manager/branch",
@@ -253,7 +253,7 @@ const reportModule = {
       // icon2: icons1.StorefrontTwoToneIcon,
     }, 
     {
-      id: 18,
+      id: 15,
       title: "Khách Hàng",
       name:"Customer",
       // url: "/home/manager/customer",
@@ -263,7 +263,7 @@ const reportModule = {
       // icon2: icons1.FavoriteTwoToneIcon,
     },
     {
-      id: 19,
+      id: 16,
       title: "Cài đặt",
       name:"Setting",
       // url: "/home/manager/setting",
@@ -281,7 +281,7 @@ const reportModule = {
       ],
     },
     {
-      id: 20.1,
+      id: 17,
       title: "Thống Kê",
       name:"Cart",
       // url: "/home/manager/report",
@@ -320,7 +320,7 @@ const MenuGroup = (props) =>{
 
   return(
     <VStack space="2">
-      <Text fontWeight="500" fontSize="14" px="2" color="gray.500">
+      <Text fontWeight="500" fontSize={14} px="2" color="gray.500">
         {item.title}
       </Text>
       {item.children.map((menuItem, index) => (
@@ -389,25 +389,26 @@ const HomeScreen = ({ navigation, route }) => {
       screenOptions={{ drawerStyle: {  width: 235, } }}
       drawerContent={(props) => <CustomDrawerContent {...props} />
     }
-     initialRouteName="Inventory"
+     initialRouteName="Customer"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng"}}/>
       <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn"}} />
       <Drawer.Screen name="InvoiceReturn" component={InvoiceReturn} options={{ title: "Đơn Trả"}}/>
-      <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng",headerShown: false,unmountOnBlur:true}} />
-      <Drawer.Screen name="Inventory" component={Inventory} options={{ title: "Sản phẩm",headerShown: false,unmountOnBlur:true}}/>
+      <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng",headerShown: false}} />
+      <Drawer.Screen name="Inventory" component={Inventory} options={{ title: "Sản phẩm",headerShown: false}}/>
       <Drawer.Screen name="InventoryOrder" component={InventoryOrder} options={{ title: "Đơn Nhập Hàng"}}/>
       <Drawer.Screen name="InventoryReturnOrder" component={InventoryReturnOrder} options={{ title: "Đơn Trả Hàng Nhập"}}/>
       <Drawer.Screen name="OrderProductList" component={OrderProductList} options={{ title: "Đặt Hàng"}}/>
       <Drawer.Screen name="CheckHistory" component={CheckHistory} options={{ title: "Kiểm Kho"}}/>
-      <Drawer.Screen name="Supplier" component={Supplier} options={{ title: "Nhà Cung Cấp"}}/>
-      <Drawer.Screen name="Branch" component={Branch} options={{ title: "Cửa Hàng"}}/>
-      <Drawer.Screen name="Customer" component={Customer} options={{ title: "Khách Hàng"}}/>
-      <Drawer.Screen name="History" component={History} options={{ title: "Lịch Sử Hoạt Động"}}/>
-      <Drawer.Screen name="Report" component={Report} options={{ title: "Thống Kê"}}/>
-      <Drawer.Screen name="Setting" component={Setting} options={{ title: "Cài đặt"}}/>
+      <Drawer.Screen name="Supplier" component={Supplier} options={{ title: "Nhà Cung Cấp",headerShown: false}}/>
       <Drawer.Screen name="Employee" component={Employee}options={{ title: "Nhân Viên"}} />
       <Drawer.Screen name="Schedule" component={Schedule} options={{ title: "Ca Làm Việc"}}/>
+      <Drawer.Screen name="History" component={History} options={{ title: "Lịch Sử Hoạt Động"}}/>
+      <Drawer.Screen name="Branch" component={Branch} options={{ title: "Cửa Hàng"}}/>
+      <Drawer.Screen name="Customer" component={Customer} options={{ title: "Khách Hàng",headerShown: false}}/>
+      <Drawer.Screen name="Setting" component={Setting} options={{ title: "Cài đặt"}}/>
+      <Drawer.Screen name="Report" component={Report} options={{ title: "Thống Kê"}}/>
+     
  
 
     </Drawer.Navigator>

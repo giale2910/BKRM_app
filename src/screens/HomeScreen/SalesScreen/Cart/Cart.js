@@ -39,7 +39,7 @@ const Cart = ({navigation}) => {
 
   return (
     <Center>
-    <Text mt="12" fontSize="18">
+    <Text mt="12" fontSize={18}>
       This is Cart page.
       <Button  onPress={() =>  navigation.navigate('Login', { name: 'Jane' }) }>Login</Button>
       {/* <BLEPrinterReceipt /> */}

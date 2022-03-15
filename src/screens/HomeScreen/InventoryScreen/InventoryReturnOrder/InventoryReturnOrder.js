@@ -16,7 +16,7 @@ import {
 const InventoryReturnOrder = () => {
   return (
     <Center>
-    <Text mt="12" fontSize="18">
+    <Text mt="12" fontSize={18}>
       This is InventoryReturnOrder page.
     </Text>
   </Center>

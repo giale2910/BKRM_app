@@ -14,9 +14,15 @@ import {
     Icon,
     Container,
   } from "native-base";
-const InventoryDetailScreen = () => {
+  import BackNavBar from '../../../../../components/NavBar/BackNavBar';
+
+const InventoryDetailScreen = ({navigation}) => {
   return (
+    <>
+        <BackNavBar navigation={navigation} title={"Thêm sản phẩm"} />
+
     <Text>InventoryDetailScreen</Text>
+    </>
   )
 }
 
