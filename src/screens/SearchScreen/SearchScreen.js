@@ -32,9 +32,7 @@ const SearchScreen = ({navigation, route}) => {
   const user_uuid = useSelector((state) => state.info.user.uuid);
 
   const [cartList, setCartList] = React.useState(navcartList);
-  console.log("selectedIndexxxx",selectedIndex)
-  console.log("cartList",navcartList)
-  console.log("cartList",cartList)
+
 
 // //Choose item
 //   const loadLocalStorage = async() => {

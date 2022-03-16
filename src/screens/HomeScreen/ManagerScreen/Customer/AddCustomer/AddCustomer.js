@@ -8,7 +8,7 @@ import { Button, VStack} from "native-base";
 //import project
 import customerApi from "../../../../../api/customerApi";
 import BackNavBar from '../../../../../components/NavBar/BackNavBar';
-import FormInput from "../../../../../components/FormInput/FormInput"
+import FormInput from "../../../../../components/Input/FormInput"
 
 
 const AddCustomer = ({navigation, route}) => {
@@ -92,11 +92,9 @@ const AddCustomer = ({navigation, route}) => {
             payment_info: customerFormik.values.paymentInfo,
         };
         try {
-            console.log("isEditres",isEdit)
             // const response = await customerApi.createCustomer(store_uuid, body)
             const response = !isEdit? await customerApi.createCustomer(store_uuid, body) :
                 await customerApi.deleteCustomer(store_uuid, row.uuid, body)
-                console.log("isEdit",isEdit)
             if(!isEdit){ navigation.goBack()} else{navigation.navigate('CustomerDetailScreen', {dataEdit:{...body, uuid:row.uuid}}) }
         //   dispatch(statusAction.successfulStatus("Tạo khách hàng thành công"));
         } catch (err) {

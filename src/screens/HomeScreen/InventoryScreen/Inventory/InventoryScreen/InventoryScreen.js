@@ -30,6 +30,9 @@ import EntypoIcon from "react-native-vector-icons/Entypo";
 
 import SearchBar  from "../../../../../components/SearchBar/SearchBar"
 import InfiniteFlatList from "../../../../../components/InfiniteFlatList/InfiniteFlatList"
+import {ProductTableRow} from "../../../../../components/TableRow/TableRow"
+
+
 const InventoryScreen = ({navigation}) => {
 
     const { isOpen, onOpen, onClose } = useDisclose();
@@ -84,27 +87,15 @@ const InventoryScreen = ({navigation}) => {
     return unsubscribe;
     }, [navigation]);
 
+ 
+
     const renderItem = (row, index) => {
         return (
-            <Pressable  key={row.uuid} onPress={() => navigation.navigate("InventoryDetailScreen", { name: "Jane" })} >
-            <HStack justifyContent="space-between" >
-                <HStack w="60%">
-                    <Image source={{ uri: row.img_url  }} alt={"name"}borderRadius="10" size="sm" />
-                    <VStack ml="3" justifyContent="space-between"  >
-                        <Text fontSize={15} fontWeight={500}>{row.name} </Text>
-                        <Text color='grey' mt="2">{row.product_code}</Text>
-                    </VStack>
-                </HStack>
-                <VStack justifyContent="space-between" alignItems="flex-end">
-                        <Text fontSize={16} color='primary.500' fontWeight="700">  {(priceShow ==="Giá bán"?row.list_price:row.standard_price).toLocaleString()} </Text>
-                       
-                        <Text color='grey' mt="2">Tồn: {row.branch_quantity}</Text>
-                </VStack>
-            </HStack>
-            <Divider my="3"/>  
-            </Pressable>
+            <ProductTableRow 
+             img={row.img_url }name={row.name}code={row.product_code} price={(priceShow ==="Giá bán"?row.list_price:row.standard_price).toLocaleString()}branch_quantity={row.branch_quantity} uuid={row.uuid}handleOnPress={()=>navigation.navigate("InventoryDetailScreen", { row: row })}/>
         );
-      };
+    };
+    
     
    
        
@@ -120,12 +111,15 @@ const InventoryScreen = ({navigation}) => {
         <Divider mb="2" />
         <InfiniteFlatList data={productList}  renderItem={renderItem} pagingState={pagingState} setPage={setPagingState} loadData={loadData} endList={endList} setEndList={setEndList}/>
 
+
         <Actionsheet isOpen={isOpen} onClose={onClose}>
             <Actionsheet.Content>
-            <Actionsheet.Item  color="red.500" onPress={()=>{setPriceShow("Giá bán");onClose();}}>Giá bán</Actionsheet.Item>
-            <Actionsheet.Item  onPress={()=>{setPriceShow("Giá vốn"); onClose()}}>Giá vốn</Actionsheet.Item>
+            <Divider borderColor="gray.300" />
+                <Actionsheet.Item  _text={{ fontSize:18}} onPress={()=>{setPriceShow("Giá bán");onClose();}}>Giá bán</Actionsheet.Item>
+            <Divider borderColor="gray.300" />
+            <   Actionsheet.Item  _text={{ fontSize:18  }}onPress={()=>{setPriceShow("Giá vốn"); onClose()}}>Giá vốn</Actionsheet.Item>
             </Actionsheet.Content>
-      </Actionsheet>
+        </Actionsheet>
     </>
   )
 }

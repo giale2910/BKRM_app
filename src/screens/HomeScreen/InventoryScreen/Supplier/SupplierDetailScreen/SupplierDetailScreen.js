@@ -2,7 +2,7 @@ import React,{useEffect} from 'react'
 import {  useSelector } from 'react-redux';
 
 
-import { VStack,Text,HStack,Divider, Avatar } from "native-base";
+import { VStack,Text,HStack,Divider, Avatar, ScrollView } from "native-base";
 
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons  from "react-native-vector-icons/MaterialCommunityIcons";
@@ -34,11 +34,8 @@ const SupplierDetailScreen = ({navigation, route}) => {
 
   const handleDeleteCustomer = async () => {
     // console.log(store_uuid, row.uuid);
-    console.log("hello1")
     try {
-      console.log("hello1")
       const response = await supplierApi.deleteSupplier(store_uuid, row.uuid);
-      console.log("hello2")
       // // dispatch(statusAction.successfulStatus("Xóa thành công"));
       // alert("hello2")
       navigation.goBack();
@@ -55,6 +52,8 @@ const SupplierDetailScreen = ({navigation, route}) => {
           <AntDesignIcon  name="edit"  size={25}  color="#424242"  onPress={() => navigation.navigate("AddSupplier", { isEdit: true , row:row})} />
     </BackNavBar>
     <Divider mt={-3} mb="6"/>
+    <ScrollView>
+    
     <VStack mx={5} space={3}>
 
       <HStack  alignItems='center'>
@@ -94,7 +93,7 @@ const SupplierDetailScreen = ({navigation, route}) => {
       </HStack> 
     </VStack>
 
-
+    </ScrollView>
 
     
 

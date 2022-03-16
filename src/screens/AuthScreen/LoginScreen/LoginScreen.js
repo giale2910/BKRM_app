@@ -12,7 +12,7 @@ import useStyle from "./styles";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { verifyToken, setCustomization } from "../../../store/actionCreator";
-
+import FormInput from "../../../components/Input/FormInput";
 import { View } from "react-native";
 import userAPi from "../../../api/userApi";
 import {
@@ -44,7 +44,7 @@ const LoginScreen = ({ navigation }) => {
 
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
   
 
   const [isOwner, setIsOwner] = useState(false);
@@ -88,54 +88,25 @@ const LoginScreen = ({ navigation }) => {
         </Text>
         {/*  */}
         <Stack space={6} w="100%" mb={5}>
-          <FormControl
-            isInvalid={
-              loginFormik.touched.user_name && loginFormik.errors.user_name
-            }
-          >
-            <Input
-              size="lg"
-              placeholder="Tên đăng nhập"
-              p={3}
-              value={loginFormik.values.user_name}
-              onChangeText={loginFormik.handleChange("user_name")}
-              onBlur={loginFormik.handleBlur("user_name")}
-            />
-
-            <FormControl.ErrorMessage
-              leftIcon={<Icon name="warning" color="red" size={15} />}
-            >
-              {loginFormik.touched.user_name
-                ? loginFormik.errors.user_name
-                : null}{" "}
-            </FormControl.ErrorMessage>
-          </FormControl>
-          <FormControl
-            isInvalid={
-              loginFormik.touched.password && loginFormik.errors.password
-            }
-          >
-            <Input
-              size="lg"
-              placeholder="Mật khẩu"
-              p={3}
-              value={loginFormik.values.password}
-              onChangeText={loginFormik.handleChange("password")}
-              onBlur={loginFormik.handleBlur("password")}
-              type={show ? "text" : "password"} 
-              h={12}
-              InputRightElement={<Box pr={2} pt={5} ><MaterialIcons name={show ? "visibility" : "visibility-off"} size={20} mr="10" color="grey" onPress={() => setShow(!show)} /> </Box>} 
-            />
+        <FormInput 
+            placeholder="Tên đăng nhập"
+            isInvalid={loginFormik.touched.user_name && loginFormik.errors.user_name}
+            value={loginFormik.values.user_name}
+            handleChange={loginFormik.handleChange("user_name")}
+            handleBlur={loginFormik.handleBlur("user_name")}
+            errorMess={loginFormik.touched.user_name ? loginFormik.errors.user_name : null}
+        />
           
-            <FormControl.ErrorMessage
-              leftIcon={<Icon name="warning" color="red" size={15} />}
-            >
-              {" "}
-              {loginFormik.touched.password
-                ? loginFormik.errors.password
-                : null}{" "}
-            </FormControl.ErrorMessage>
-          </FormControl>
+          <FormInput 
+            isPwd={true}
+            placeholder="Mật khẩu"
+            isInvalid={loginFormik.touched.password && loginFormik.errors.password}
+            value={loginFormik.values.password}
+            handleChange={loginFormik.handleChange("password")}
+            handleBlur={loginFormik.handleBlur("password")}
+            errorMess={loginFormik.touched.password ? loginFormik.errors.password : null}
+        />
+         
         </Stack>
 
         <Box style={{ alignSelf: "flex-end" }} mb={9}>
@@ -173,24 +144,7 @@ const LoginScreen = ({ navigation }) => {
                 )
               );
             }
-           
-            console.log("hello")
-          //   const signIn = async () => {
-          //     try {
-          //       const res = await userAPi.signIn({
-          //         user_name: loginFormik.values.user_name,
-          //         password: loginFormik.values.password,
-          //         role: isOwner ? "owner" : "employee",
-          //       });
-          //       alert(JSON.stringify(res));
-          //       // navigation.navigate("Home", { name: "Jane" });
-          //       //console.log(res);
-          //     } catch (err) {
-          //       console.log(err);
-          //     }
-          //   };
-          //   signIn();
-          
+
           }}
         >
           ĐĂNG NHẬP
@@ -202,23 +156,5 @@ const LoginScreen = ({ navigation }) => {
 
 export default LoginScreen;
 
-// <Heading>xin chao</Heading>
-//       <Text fontSize="lg" display="flex" mb="20">
-//         The active color mode is{' '}
-//         <Text bold fontSize="lg">
-//           {colorMode}
-//         </Text>
-//       </Text>
-//       <Button  bg={`blue.${colorKey}`} onPress={() =>  navigation.navigate('Home', { name: 'Jane' }) }>Login</Button>
-//       <Button onPress={toggleColorMode}>Toggle</Button>
 
-
-
-  
-
-  //
-  // const { colorMode, toggleColorMode} = useColorMode();
-  // var colorKey=200;
-  // colorScheme={`blue.${colorKey}`}
-  // console.log("theme", theme )flex={1}
 

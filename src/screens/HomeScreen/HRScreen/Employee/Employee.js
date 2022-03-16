@@ -1,26 +1,21 @@
 import React from 'react'
-import {
-    NativeBaseProvider,
-    Button,
-    Box,
-    HamburgerIcon,
-    Pressable,
-    Heading,
-    VStack,
-    Text,
-    Center,
-    HStack,
-    Divider,
-    Icon,
-  } from "native-base";
-const Employee = () => {
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import EmployeeScreen from "./EmployeeScreen/EmployeeScreen"
+import EmployeeDetailScreen from "./EmployeeDetailScreen/EmployeeDetailScreen"
+import AddEmployee from "./AddEmployee/AddEmployee"
+
+
+const Stack = createNativeStackNavigator();
+
+const Supplier = ({navigation}) => {
   return (
-    <Center>
-    <Text mt="12" fontSize={18}>
-      This is Employee page.
-    </Text>
-  </Center>
+    <Stack.Navigator>  
+      <Stack.Screen name="EmployeeScreen"  component={EmployeeScreen}  options={{ headerShown: false}} />   
+      <Stack.Screen name="EmployeeDetailScreen" component={EmployeeDetailScreen}  options={{ headerShown: false, }} />
+      <Stack.Screen name="AddEmployee" component={AddEmployee}  options={{ headerShown: false, }} />
+  </Stack.Navigator>
   )
 }
 
-export default Employee
+export default Supplier

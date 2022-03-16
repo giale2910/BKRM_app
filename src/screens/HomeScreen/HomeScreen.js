@@ -389,19 +389,19 @@ const HomeScreen = ({ navigation, route }) => {
       screenOptions={{ drawerStyle: {  width: 235, } }}
       drawerContent={(props) => <CustomDrawerContent {...props} />
     }
-     initialRouteName="Supplier"
+     initialRouteName="InventoryOrder"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng"}}/>
       <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn"}} />
       <Drawer.Screen name="InvoiceReturn" component={InvoiceReturn} options={{ title: "Đơn Trả"}}/>
       <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng",headerShown: false}} />
       <Drawer.Screen name="Inventory" component={Inventory} options={{ title: "Sản phẩm",headerShown: false}}/>
-      <Drawer.Screen name="InventoryOrder" component={InventoryOrder} options={{ title: "Đơn Nhập Hàng"}}/>
+      <Drawer.Screen name="InventoryOrder" component={InventoryOrder} options={{ title: "Đơn Nhập Hàng",headerShown: false}}/>
       <Drawer.Screen name="InventoryReturnOrder" component={InventoryReturnOrder} options={{ title: "Đơn Trả Hàng Nhập"}}/>
       <Drawer.Screen name="OrderProductList" component={OrderProductList} options={{ title: "Đặt Hàng"}}/>
       <Drawer.Screen name="CheckHistory" component={CheckHistory} options={{ title: "Kiểm Kho"}}/>
       <Drawer.Screen name="Supplier" component={Supplier} options={{ title: "Nhà Cung Cấp",headerShown: false}}/>
-      <Drawer.Screen name="Employee" component={Employee}options={{ title: "Nhân Viên"}} />
+      <Drawer.Screen name="Employee" component={Employee}options={{ title: "Nhân Viên",headerShown: false}} />
       <Drawer.Screen name="Schedule" component={Schedule} options={{ title: "Ca Làm Việc"}}/>
       <Drawer.Screen name="History" component={History} options={{ title: "Lịch Sử Hoạt Động"}}/>
       <Drawer.Screen name="Branch" component={Branch} options={{ title: "Cửa Hàng"}}/>

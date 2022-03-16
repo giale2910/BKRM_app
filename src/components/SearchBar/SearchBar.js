@@ -1,4 +1,4 @@
-import React from 'react'
+import React , {useState,useEffect} from 'react'
 import {
     NativeBaseProvider,
     Button,
@@ -16,7 +16,14 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
-const SearchBar = () => {
+const SearchBar = ({setSearchKey}) => {
+  const [valueSearch, setValueSearch] = useState(false);
+  const [search, setSearch] = useState(false);
+
+  useEffect(() => {
+    // setSearchKey(valueSearch)
+}, [search]);
+
   return (
     <Center mb="4" mt="-3">
     <Input  
@@ -26,7 +33,16 @@ const SearchBar = () => {
           InputRightElement={<Box pr={3} pt={5}><Icon  name="barcode"  size={25}  color="grey"  /> </Box>} 
           h={12}
           size="md" p={3} variant="rounded" placeholder="Tìm sản phẩm (mã sp, tên)"  
-          // onChangeText={val => loadingData(val)}
+          onChangeText={val => {
+            setValueSearch(val)
+          }}
+          onKeyPress={e => {
+            if (e.nativeEvent.key ===' ') {
+              setSearch(valueSearch.length)
+            }
+          }}
+         
+              
          
      /> 
      </Center>

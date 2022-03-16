@@ -1,25 +1,18 @@
 import React from 'react'
-import {
-    NativeBaseProvider,
-    Button,
-    Box,
-    HamburgerIcon,
-    Pressable,
-    Heading,
-    VStack,
-    Text,
-    Center,
-    HStack,
-    Divider,
-    Icon,
-  } from "native-base";
-const Invoice = () => {
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import InvoiceOrderScreen from "./InvoiceScreen/InvoiceScreen"
+import InvoiceOrderDetailScreen from "./InvoiceDetailScreen/InvoiceDetailScreen"
+
+
+const Stack = createNativeStackNavigator();
+
+const Invoice = ({navigation}) => {
   return (
-    <Center>
-    <Text mt="12" fontSize={18}>
-      This is Invoice page.
-    </Text>
-  </Center>
+    <Stack.Navigator>  
+      <Stack.Screen name="InvoiceOrderScreen"  component={InvoiceOrderScreen}  options={{ headerShown: false}} />   
+      <Stack.Screen name="InvoiceOrderDetailScreen" component={InvoiceOrderDetailScreen}  options={{ headerShown: false, }} />
+  </Stack.Navigator>
   )
 }
 

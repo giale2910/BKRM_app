@@ -8,7 +8,7 @@ import { Button, VStack} from "native-base";
 //import project
 import supplierApi from "../../../../../api/supplierApi";
 import BackNavBar from '../../../../../components/NavBar/BackNavBar';
-import FormInput from "../../../../../components/FormInput/FormInput"
+import FormInput from "../../../../../components/Input/FormInput"
 
 
 const AddSupplier = ({navigation, route}) => {
@@ -114,8 +114,7 @@ const AddSupplier = ({navigation, route}) => {
                 company:supplierFormik.values.company?.toString(),
             };
             if(!isEdit ){
-                console.log("store_uuid",store_uuid )
-                console.log("bodyFormData",bodyFormData )
+          
                 await supplierApi.createSupplier(
                     store_uuid,
                     bodyFormData
