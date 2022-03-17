@@ -18,7 +18,7 @@ const DatePicker = ({isDatePickerVisible,setDatePickerVisibility,label,formik,na
 
   
     const getFullDate = (date) => {
-    if (date.length === 0) {return label}
+    if (date?.length === 0) {return label}
     else{
       let formatDate = new Date(date)
       var day = formatDate.getDate()

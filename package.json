@@ -40,7 +40,7 @@
     "react-native-modal-datetime-picker": "^13.1.0",
     "react-native-reanimated": "~2.2.0",
     "react-native-safe-area-context": "3.2.0",
-    "react-native-screens": "~3.4.0",
+    "react-native-screens": "^3.4.0",
     "react-native-svg": "12.1.1",
     "react-native-thermal-receipt-printer": "^1.1.5",
     "react-native-web": "~0.13.12",

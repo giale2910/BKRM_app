@@ -94,7 +94,7 @@ const AddCustomer = ({navigation, route}) => {
         try {
             // const response = await customerApi.createCustomer(store_uuid, body)
             const response = !isEdit? await customerApi.createCustomer(store_uuid, body) :
-                await customerApi.deleteCustomer(store_uuid, row.uuid, body)
+                await customerApi.updateCustomer(store_uuid, row.uuid, body)
             if(!isEdit){ navigation.goBack()} else{navigation.navigate('CustomerDetailScreen', {dataEdit:{...body, uuid:row.uuid}}) }
         //   dispatch(statusAction.successfulStatus("Tạo khách hàng thành công"));
         } catch (err) {

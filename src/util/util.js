@@ -9,6 +9,7 @@ export const callPhone = (number) => {
 }
 
 export const formatDate = (fullDate) => {
+    if(fullDate ===undefined){return }
     fullDate = fullDate.split(' ')
     var date = fullDate[0].split('-').reverse()
     var year = date[2].substring(2,5)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { VStack, Text, HStack, Divider,  Avatar,Image,Box } from "native-base";
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity,StyleSheet} from 'react-native';
 import {formatDate} from '../../util/util'
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 
@@ -20,8 +20,9 @@ export const BillTableRow = ({code, name, date, totalCost,color,uuid,handleOnPre
                 <Text fontSize={13} color={color} bold fontWeight={700} fontSize={18}> {totalCost.toLocaleString()} </Text> 
         </VStack>
     </HStack>
+    <Divider my="3"/>  
     </TouchableOpacity>
-     <Divider my="3"/>  
+    
      </>
   )
 }
@@ -37,7 +38,9 @@ export const PartnerTableRow = ({img, name, phone, code,score,isSupplier, uuid,h
     <TouchableOpacity  key={uuid} onPress={handleOnPress}>
     <HStack justifyContent="space-between" >
         <HStack w="72%">
-       { getImage()}
+          
+          {getImage()}
+          
             <VStack ml="3" justifyContent="space-between"  >
                 <Text fontSize={16} fontWeight={500} mb={2}>{name} </Text>
 
@@ -52,9 +55,9 @@ export const PartnerTableRow = ({img, name, phone, code,score,isSupplier, uuid,h
                 <Text  fontSize={17} bold mt="2" color="secondary.500">{score}</Text>
         </VStack>
     </HStack>
-   
+    <Divider my="3"/>  
     </TouchableOpacity>
-     <Divider my="3"/>  
+    
      </>
   )
 }
@@ -76,8 +79,9 @@ export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPr
                   <Text color='grey' mt="2">Tồn: {branch_quantity}</Text>
           </VStack>
       </HStack>
-      </TouchableOpacity>
       <Divider my="3"/>  
+      </TouchableOpacity>
+     
      </>
   )
 }
@@ -85,7 +89,7 @@ export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPr
 
 export const SummaryProductTableRow = ({item}) => {
   return (
-    <Box  borderWidth="1"  borderColor="coolGray.200" borderRadius="5"   justifyContent="center" p="2" py="3">
+    <Box  borderWidth="1"  borderColor="coolGray.300" borderRadius="5"   justifyContent="center" p="2" py="2" >
         <HStack  key={item.product_id}  justifyContent="space-between" >
           <VStack ml="3" justifyContent="space-between"  space={2} >
               <Text fontSize={16} fontWeight={500}>{item.name} </Text>
@@ -106,6 +110,7 @@ export const SummaryProductTableRow = ({item}) => {
     </Box>  
   )
 }
+
 
 
  

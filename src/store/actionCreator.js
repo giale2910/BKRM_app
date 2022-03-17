@@ -24,12 +24,13 @@ export const verifyToken = () => {
     };
     try {
       const rs = await verifyToken();
-      if (rs) {
+      if (rs.data) {
         dispatch(authActions.logIn());
-        if (rs.role == "owner") {
+        if (rs.data.role == "owner") {
           dispatch(
             infoActions.setUser({
-              ...rs.user,
+              // ...rs.user,
+              ...rs.data.user,
               permissions: [
                 { id: 1, name: "inventory", description: "Kho hàng" },
                 { id: 2, name: "employee", description: "Nhân sự" },
@@ -41,11 +42,14 @@ export const verifyToken = () => {
           );
         } else {
           dispatch(
-            infoActions.setUser({ ...rs.user, permissions: rs.permissions })
+            infoActions.setUser({ ...rs.data.user, permissions: rs.data.permissions })
+            // infoActions.setUser({ ...rs.user, permissions: rs.permissions })
           );
         }
-        dispatch(infoActions.setStore(rs.store));
-        dispatch(infoActions.setRole(rs.role));
+        dispatch(infoActions.setStore(rs.data.store));
+        dispatch(infoActions.setRole(rs.data.role));
+        // dispatch(infoActions.setStore(rs.store));
+        // dispatch(infoActions.setRole(rs.role));
       } else {
         dispatch(authActions.logOut());
       }

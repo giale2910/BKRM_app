@@ -9,36 +9,24 @@ import MaterialCommunityIcons  from "react-native-vector-icons/MaterialCommunity
 import AntDesignIcon from "react-native-vector-icons/AntDesign";
 
 //import project
-import purchaseOrderApi from '../../../../../api/purchaseOrderApi'
+import purchaseReturnApi from '../../../../../api/purchaseReturnApi'
 import BackNavBar from '../../../../../components/NavBar/BackNavBar';
 import {callPhone} from "../../../../../util/util"
 import {formatDate, calculateTotalQuantity} from "../../../../../util/util"
 import {SummaryProductTableRow} from "../../../../../components/TableRow/TableRow"
 import {TouchableOpacity,View } from 'react-native'
 
-const InvoiceOrderScreen = ({navigation, route}) => {
+const InventoryReturnOrderDetailScreen = ({navigation, route}) => {
   const [row, setRow] = React.useState(route.params.row);
 
   const info = useSelector(state => state.info)
   const store_uuid = info.store.uuid
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const onClose = () => setIsOpen(false);
 
-  const debtAmount =
-    Number(row.total_amount) - Number(row.discount) - Number(row.paid_amount);
-
-  // useEffect(() => {
-  //   if (route.params?.dataEdit) {
-  //     setRow(route.params.dataEdit)
-  //   }
-  // }, [route.params?.dataEdit]);
-
-  const [reload, setReload] = useState(false)
 
   const loadData = async () => {
     try {
-      const res = await purchaseOrderApi.getPurchaseOrder( store_uuid, row.uuid );
+      const res = await purchaseReturnApi.getPurchaseReturn( store_uuid, row.uuid );
       // setRow(res.data);
       setRow(res.data.data);
     } catch (error) {
@@ -50,75 +38,51 @@ const InvoiceOrderScreen = ({navigation, route}) => {
       loadData();
     }, []);
 
-  useEffect(() => {
-    loadData();
-  }, [reload]);
+  
 
 
-  const [openPayRemaining, setOpenPayRemaining] = useState(false);
-  const editInventoryOrderApiCall = async (
-    store_uuid,
-    branch_uuid,
-    uuid,
-    body
-  ) => {
-    return purchaseOrderApi.editPurchaseOrder(
-      store_uuid,
-      branch_uuid,
-      uuid,
-      body
-    );
-  };
 
-
-  console.log("row",row)
-  //reload
   return (
    
    <>
-    <BackNavBar navigation={navigation} title={"Chi tiết đơn nhập hàng"} > 
+    <BackNavBar navigation={navigation} title={"Chi tiết đơn trả hàng nhập"} > 
         {/*  */}
     </BackNavBar>
     <Divider mt={-3} mb="6"/>
-     <ScrollView>
+    <ScrollView>
     
     <Center >
-      <Heading size="xl" mb={5}>{(row.total_amount - row.discount).toLocaleString()} </Heading>
+      <Heading size="xl" mb={5}>{Number(row.total_amount).toLocaleString()} </Heading>
       </Center >
       <VStack mx={5} space={2.5}>
-      {/* <Box  borderWidth="1"  borderColor="coolGray.200" borderRadius="5"   justifyContent="center" >
-
-    <VStack  space={3} m={4}>
-     */}
+      
+      <HStack  alignItems='center'>
+        <Text bold w="50%" color='black'>Mã trả hàng nhập : </Text>
+        <Text fontSize={16} >{row.purchase_return_code}</Text>
+      </HStack> 
       <HStack  alignItems='center'>
         <Text bold w="50%" color='black'>Mã đơn nhập : </Text>
-        <Text fontSize={16} >{row.purchase_order_code}</Text>
+        <Text fontSize={16} >{row.purchase_order? row.purchase_order.name :""}</Text>
       </HStack> 
       <HStack>
-        <Text bold w="50%" color='black'>Ngày bán : </Text>
+        <Text bold w="50%" color='black'>Ngày trả : </Text>
         <Text fontSize={16} >{formatDate(row.creation_date)}</Text>
       </HStack> 
       <HStack>
         <Text bold w="50%"color='black' >Nhà cung cấp : </Text>
-        <Text fontSize={16} >{row.supplier_name}</Text>
+        <Text fontSize={16} >{row.supplier_name ? row.supplier_name: ""}</Text>
       </HStack> 
       <HStack>
-        <Text bold w="50%"color='black' >Người nhập : </Text>
+        <Text bold w="50%"color='black' >Người thực hiện : </Text>
         <Text fontSize={16}  >{ row.created_by_user ? row.created_by_user.name  : ""}{" "}</Text>
       </HStack> 
-      {/* <HStack>
-        <Text w="50%"color='black' >Tổng tiền nhập :</Text>
-        <Text fontSize={16}  >{row.total_amount}</Text>
-      </HStack>  */}
+
       <HStack>
         <Text bold w="50%"color='black' >Chi nhánh thực hiện :</Text>
         <Text fontSize={16}  >{row.branch ? row.branch.name : ""}</Text>
       </HStack> 
 
-      <HStack>
-        <Text bold w="50%"color='black' >Trạng thái :</Text>
-        <Text fontSize={16}  >{debtAmount >  0 ?"Còn nợ " :"Trả đủ"}  {debtAmount >  0 ?<VNDFormat value={debtAmount} />  :null } </Text>
-      </HStack> 
+       
       <HStack>
         <Text bold w="50%"color='black' >Phương thức thanh toán :</Text>
         <Text fontSize={16}  >{row.payment_method === "cash" ? "Tiền mặt" : "Thẻ"}</Text>
@@ -137,21 +101,14 @@ const InvoiceOrderScreen = ({navigation, route}) => {
             <Text  w="30%" fontSize={16} >{row.details?calculateTotalQuantity(row.details) : null}</Text>
           </HStack>
           <HStack  alignItems='center'>
-            <Text w="50%" color='black'>Tổng tiền hàng : </Text>
-            <Text w="30%"fontSize={16} >{row.total_amount.toLocaleString()}</Text>
+            <Text w="50%" bold color='black'>Tổng tiền trả : </Text>
+            <Text w="30%" bold fontSize={16} >{Number(row.total_amount).toLocaleString()}</Text>
           </HStack>
-          <HStack  alignItems='center'>
-            <Text w="50%" color='black'>Giảm giá : </Text>
-            <Text w="30%" fontSize={16} >{row.discount.toLocaleString()}</Text>
-          </HStack>
-          <HStack  alignItems='center'>
-            <Text w="50%" color='black' bold>Tổng tiền nhập : </Text>
-            <Text w="30%" bold fontSize={16} >{(row.total_amount - row.discount).toLocaleString()}</Text>
-          </HStack>
-          <HStack  alignItems='center'>
-            <Text w="50%" color='black'>Đã trả NCC : </Text>
+          
+          {/* <HStack  alignItems='center'>
+            <Text w="50%" color='black'>NCC đã trả : </Text>
             <Text w="30%"  fontSize={16} >{row.paid_amount.toLocaleString()}</Text>
-          </HStack>
+          </HStack> */}
       </Box>
 
     </VStack>
@@ -162,7 +119,7 @@ const InvoiceOrderScreen = ({navigation, route}) => {
   )
 }
 
-export default InvoiceOrderScreen
+export default InventoryReturnOrderDetailScreen
 
 const styles = StyleSheet.create({
 

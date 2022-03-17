@@ -72,7 +72,8 @@ const LoginScreen = ({ navigation }) => {
   }, [isLoggedIn]);
 
   return (
-    <Center flex={1} bg={`${theme.customization.primaryColor}.${100}`}>
+    // <Center flex={1} bg={`${theme.customization.primaryColor}.${100}`}>
+    <Center flex={1} bg={"cyan.100"}>
       <Container
         h="93%"
         w="93%"

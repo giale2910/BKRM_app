@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSelector } from "react-redux";
 
 import {TouchableOpacity} from 'react-native';
-import { VStack, Text, HStack, Divider,  Avatar ,IconButton} from "native-base";
+import { VStack, Text, HStack, Divider,  Avatar,IconButton } from "native-base";
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 
  //import project
-import purchaseOrderApi from "../../../../../api/purchaseOrderApi";
+import purchaseReturnApi from "../../../../../api/purchaseReturnApi";
 import NavBar from "../../../../../components/NavBar/NavBar"
 import SearchBar  from "../../../../../components/SearchBar/SearchBar"
 import InfiniteFlatList from "../../../../../components/InfiniteFlatList/InfiniteFlatList"
@@ -18,9 +18,8 @@ import PopUpSort from "../../../../../components/PopUp/PopUpSort"
 import PopUpFilter from "../../../../../components/PopUp/PopUpFilter"
 
 
-const InventoryOrderScreen = ({navigation}) => {
+const InventoryReturnOrderScreen = ({navigation}) => {
     
-
     //supplier
     const [customerList, setCustomerList] = useState([]);
 
@@ -38,17 +37,11 @@ const InventoryOrderScreen = ({navigation}) => {
     const initialQuery = {
         startDate: '',
         endDate: '',
-        minDiscount: '',
-        maxDiscount: '',
         minTotalAmount: '',
         maxTotalAmount: '',
-        // minDiscount: 0,
-        // maxDiscount: 0,
-        // minTotalAmount: 0,
-        // maxTotalAmount: 0,
         status: '',
         paymentMethod: '',
-        orderBy: 'purchase_orders.creation_date',
+        orderBy: 'purchase_returns.creation_date',
         sort: 'desc',
         searchKey: '',
     };
@@ -56,7 +49,6 @@ const InventoryOrderScreen = ({navigation}) => {
     const [query, setQuery] = useState(initialQuery)
 
     const [pagingState, setPagingState] = useState({ page: 0, loading: false });
-
   
     useEffect(() => {
         setPagingState({ ...pagingState, page:0 });
@@ -64,14 +56,10 @@ const InventoryOrderScreen = ({navigation}) => {
 
     const loadData = async (page, isRefresh=false) => {
         try {
-            console.log("allooooo")
-            const response = await purchaseOrderApi.getAllOfBranch( store_uuid,  branch_uuid,{ page: page,limit: global.limitPerLoad, ...query});
-            console.log("customerList",customerList)
-            if(response.data.data.length === 0 || response.data.data.length < global.limitPerLoad ){setEndList(true)}
+            const response = await purchaseReturnApi.getAllOfBranch( store_uuid,  branch_uuid,{ page: page,limit: global.limitPerLoad, ...query});
+            if(response.data.data.length === 0 || response.data.data.length < global.limitPerLoad){setEndList(true)}
             if(isRefresh){
-                console.log("hello")
                 setCustomerList(response.data.data); 
-                console.log("customerList",customerList)
                 setPagingState({  page: 1 ,loading:false })
             }else{
  
@@ -99,31 +87,28 @@ const InventoryOrderScreen = ({navigation}) => {
     }, [navigation]);
 
 
-
     const handleRemoveFilter = () => {
         setQuery(initialQuery)
     }
    
 
  
- 
-const renderItem = (row, index) => {
-    return (
-        <BillTableRow code={row.purchase_order_code} name={row.supplier_name} date={row.creation_date} totalCost={row.total_amount -row.discount}  color='primary.500' uuid={row.uuid} handleOnPress={()=> navigation.navigate("InventoryOrderDetailScreen", { row: row})} />
+    const renderItem = (row, index) => {
+        return (
+            <BillTableRow code={row.purchase_return_code} name={row.supplier_name} date={row.creation_date} totalCost={Number(row.total_amount)}  color='secondary.500' uuid={row.uuid} handleOnPress={()=> navigation.navigate("InventoryReturnOrderDetailScreen", { row: row})} />
         );
     };
 
   return (
       <>
-        <NavBar  navigation={navigation} title={"Đơn nhập hàng"} >
-            {/* <Icon  name="add"  size={25}   onPress={() => navigation.navigate("Import", { isEdit: false })} />
-            <Icon  name="swap-vert"  size={25} onPress={() => setShowModalSort(true)}/>
+        <NavBar  navigation={navigation} title={"Đơn trả hàng nhập"} >
+            {/* <Icon  name="swap-vert"  size={25} onPress={() => setShowModalSort(true)}/>
             <Icon  name="filter-alt" size={25}  onPress={() => setShowModalFilter(true)}/> */}
-            <IconButton size={"lg"} mt={-1}  colorScheme='warmGray' variant={"ghost"} _icon={{ as: Icon ,  name: "add", size:6 }} onPress={() => navigation.navigate("Import", { isEdit: false })} />
-            <IconButton size={"lg"} mt={-1} ml={-5} colorScheme='warmGray' variant={"ghost"} _icon={{ as: Icon ,  name: "swap-vert", size:6 }} onPress={() => setShowModalSort(true)}/>
+            <IconButton size={"lg"} mt={-1}  colorScheme='warmGray' variant={"ghost"} _icon={{ as: Icon ,  name: "swap-vert", size:6 }} onPress={() => setShowModalSort(true)}/>
             <IconButton size={"lg"} mt={-1} ml={-5}mr={-2.5}  colorScheme='warmGray' variant={"ghost"} _icon={{ as: Icon ,  name: "filter-alt", size:6 }}onPress={() => setShowModalFilter(true)}/>
 
         </NavBar>  
+
         <SearchBar  searchKey={query.searchKey} setSearchKey={(value) => setQuery({...query, searchKey: value})}/> 
         <InfiniteFlatList data={customerList}  renderItem={renderItem} pagingState={pagingState} setPage={setPagingState} loadData={loadData} endList={endList} setEndList={setEndList}/> 
 
@@ -133,9 +118,9 @@ const renderItem = (row, index) => {
             setSort={(value) => setQuery({...query, sort:value})}
             orderBy={query.orderBy} 
             setOrderBy={(value) => setQuery({...query, orderBy: value})}
-            orderByOptions={[
-                {value: 'purchase_orders.creation_date', label: 'Ngày nhập'},
-                {value: 'total_amount', label: 'Tổng tiền nhập'},
+             orderByOptions={[
+                {value: 'purchase_returns.creation_date', label: 'Ngày trả'},
+                {value: 'total_amount', label: 'Tổng tiền trả'},
             ]}
             handleRemoveFilter={handleRemoveFilter}
 
@@ -146,8 +131,7 @@ const renderItem = (row, index) => {
          setQuery={setQuery}
          handleRemoveFilter={handleRemoveFilter}
          initialQuery={initialQuery}
-         label={["Ngày nhập:","Tiền nhập:", "Giảm giá:" ]}
-
+         label={["Ngày trả:","Tiền trả:" ]}
          /> 
          :null}
 
@@ -155,7 +139,7 @@ const renderItem = (row, index) => {
   )
 }
 
-export default InventoryOrderScreen
+export default InventoryReturnOrderScreen
 
 
 

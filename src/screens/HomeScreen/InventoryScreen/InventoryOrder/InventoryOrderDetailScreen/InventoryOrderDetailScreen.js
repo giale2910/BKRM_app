@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import {  useSelector } from 'react-redux';
 
 
-import { VStack,Text,HStack,Divider,Heading, Avatar,Center,Box, ScrollView } from "native-base";
+import { VStack,Text,HStack,Divider,Heading, Avatar,Center,Box, ScrollView,Button } from "native-base";
 import {StyleSheet} from 'react-native'
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons  from "react-native-vector-icons/MaterialCommunityIcons";
@@ -15,26 +15,18 @@ import {callPhone} from "../../../../../util/util"
 import {formatDate, calculateTotalQuantity} from "../../../../../util/util"
 import {SummaryProductTableRow} from "../../../../../components/TableRow/TableRow"
 import {TouchableOpacity,View } from 'react-native'
-
+import PopUpPayRemaining from '../../../../../components/PopUp/PopUpPayRemaining';
 const InventoryOrderDetailScreen = ({navigation, route}) => {
   const [row, setRow] = React.useState(route.params.row);
 
   const info = useSelector(state => state.info)
   const store_uuid = info.store.uuid
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const onClose = () => setIsOpen(false);
-
+  const [reload, setReload] = useState(false);
   const debtAmount =
     Number(row.total_amount) - Number(row.discount) - Number(row.paid_amount);
 
-  // useEffect(() => {
-  //   if (route.params?.dataEdit) {
-  //     setRow(route.params.dataEdit)
-  //   }
-  // }, [route.params?.dataEdit]);
 
-  const [reload, setReload] = useState(false)
 
   const loadData = async () => {
     try {
@@ -49,35 +41,28 @@ const InventoryOrderDetailScreen = ({navigation, route}) => {
   useEffect(() => {
       loadData();
     }, []);
+    useEffect(() => {
+      loadData();
+    }, [reload]);
+    
 
-  useEffect(() => {
-    loadData();
-  }, [reload]);
 
 
   const [openPayRemaining, setOpenPayRemaining] = useState(false);
-  const editInventoryOrderApiCall = async (
-    store_uuid,
-    branch_uuid,
-    uuid,
-    body
-  ) => {
-    return purchaseOrderApi.editPurchaseOrder(
-      store_uuid,
-      branch_uuid,
-      uuid,
-      body
-    );
-  };
+  const editInventoryOrderApiCall = async ( store_uuid, branch_uuid,  uuid,  body ) => {
+    return purchaseOrderApi.editPurchaseOrder( store_uuid, branch_uuid,uuid,  body );};
 
 
-  console.log("row",row)
-  //reload
   return (
    
    <>
-    <BackNavBar navigation={navigation} title={"Chi tiết đơn nhập hàng"} > 
+    <BackNavBar navigation={navigation} title={"Chi tiết đơn nhập hàng"}  > 
         {/*  */}
+        {/* <Button p={1} variant="Subtle"size={"md"}colorScheme='blue'>Trả hàng</Button> */}
+        <Button size="md" borderRadius={20} px={3} py={1.5} my={-1}colorScheme="blue" mt={-2} 
+            onPress={()=>{navigation.navigate("",{data:row})}}>
+            Trả hàng
+          </Button>
     </BackNavBar>
     <Divider mt={-3} mb="6"/>
      <ScrollView>
@@ -108,7 +93,7 @@ const InventoryOrderDetailScreen = ({navigation, route}) => {
       </HStack> 
       {/* <HStack>
         <Text w="50%"color='black' >Tổng tiền nhập :</Text>
-        <Text fontSize={16}  >{row.total_amount}</Text>
+        <Text fontSize={16}  >{row.total_amount -row.discount}</Text>
       </HStack>  */}
       <HStack>
         <Text bold w="50%"color='black' >Chi nhánh thực hiện :</Text>
@@ -117,8 +102,21 @@ const InventoryOrderDetailScreen = ({navigation, route}) => {
 
       <HStack>
         <Text bold w="50%"color='black' >Trạng thái :</Text>
-        <Text fontSize={16}  >{debtAmount >  0 ?"Còn nợ " :"Trả đủ"}  {debtAmount >  0 ?<VNDFormat value={debtAmount} />  :null } </Text>
+        <Text fontSize={16} mr={2} >{debtAmount >  0 ?"Còn nợ" :"Trả đủ"}  {debtAmount >  0 ?debtAmount.toLocaleString() :null } </Text>
+        {debtAmount >  0 ?<Button size="sm"  colorScheme='blue'mt={-2} onPress={() => setOpenPayRemaining(true)}>Trả tiếp </Button>:null}
       </HStack> 
+
+      <PopUpPayRemaining 
+          reloadDetail={() => setReload(!reload)}
+          uuid={row.uuid}
+          debt={debtAmount}
+          paid={Number(row.paid_amount)}
+          title={`Trả nợ đơn nhập hàng ${row.purchase_order_code}` }
+          open={openPayRemaining}
+          handleClose={() => setOpenPayRemaining(false)}
+          editApiCall={editInventoryOrderApiCall}
+          
+      />
       <HStack>
         <Text bold w="50%"color='black' >Phương thức thanh toán :</Text>
         <Text fontSize={16}  >{row.payment_method === "cash" ? "Tiền mặt" : "Thẻ"}</Text>
@@ -138,11 +136,11 @@ const InventoryOrderDetailScreen = ({navigation, route}) => {
           </HStack>
           <HStack  alignItems='center'>
             <Text w="50%" color='black'>Tổng tiền hàng : </Text>
-            <Text w="30%"fontSize={16} >{row.total_amount.toLocaleString()}</Text>
+            <Text w="30%"fontSize={16} >{row.total_amount?.toLocaleString()}</Text>
           </HStack>
           <HStack  alignItems='center'>
             <Text w="50%" color='black'>Giảm giá : </Text>
-            <Text w="30%" fontSize={16} >{row.discount.toLocaleString()}</Text>
+            <Text w="30%" fontSize={16} >{row.discount?.toLocaleString()}</Text>
           </HStack>
           <HStack  alignItems='center'>
             <Text w="50%" color='black' bold>Tổng tiền nhập : </Text>

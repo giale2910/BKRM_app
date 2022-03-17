@@ -77,6 +77,7 @@ import deliveryIcon from "../../assets/img/icon/history3.png";
 // import FormControl from "@mui/material/FormControl";
 // import Select from "@mui/material/Select";
 import branchApi from "../../api/branchApi";
+import productApi from "../../api/productApi"
 import { infoActions } from "../../store/slice/infoSlice";
 import { Select } from "native-base";
 import { useDispatch, useSelector } from "react-redux";
@@ -367,6 +368,15 @@ const HomeScreen = ({ navigation, route }) => {
         })
       );
 
+
+      // GET ALL PRODUCT SAVE TO REDUX
+      const response_product = await productApi.getProductsOfBranch( infoDetail.store.uuid,  infoDetail.branch.uuid,{ page: 0,   limit: 1000});
+      console.warn(response_product.data.data)
+      dispatch(
+        dataActions.setProduct(response_product.data.data)
+      );
+
+
     }catch(err) {
       // alert(JSON.stringify(err))
     }
@@ -392,12 +402,12 @@ const HomeScreen = ({ navigation, route }) => {
      initialRouteName="InventoryOrder"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng"}}/>
-      <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn"}} />
-      <Drawer.Screen name="InvoiceReturn" component={InvoiceReturn} options={{ title: "Đơn Trả"}}/>
+      <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn",headerShown: false}} />
+      <Drawer.Screen name="InvoiceReturn" component={InvoiceReturn} options={{ title: "Đơn Trả",headerShown: false}}/>
       <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng",headerShown: false}} />
       <Drawer.Screen name="Inventory" component={Inventory} options={{ title: "Sản phẩm",headerShown: false}}/>
       <Drawer.Screen name="InventoryOrder" component={InventoryOrder} options={{ title: "Đơn Nhập Hàng",headerShown: false}}/>
-      <Drawer.Screen name="InventoryReturnOrder" component={InventoryReturnOrder} options={{ title: "Đơn Trả Hàng Nhập"}}/>
+      <Drawer.Screen name="InventoryReturnOrder" component={InventoryReturnOrder} options={{ title: "Đơn Trả Hàng Nhập",headerShown: false}}/>
       <Drawer.Screen name="OrderProductList" component={OrderProductList} options={{ title: "Đặt Hàng"}}/>
       <Drawer.Screen name="CheckHistory" component={CheckHistory} options={{ title: "Kiểm Kho"}}/>
       <Drawer.Screen name="Supplier" component={Supplier} options={{ title: "Nhà Cung Cấp",headerShown: false}}/>

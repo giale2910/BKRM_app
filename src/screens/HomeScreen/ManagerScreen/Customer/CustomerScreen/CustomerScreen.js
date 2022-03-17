@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSelector } from "react-redux";
 
 import {TouchableOpacity} from 'react-native';
-import { VStack, Text, HStack, Divider,  Avatar } from "native-base";
+import { VStack, Text, HStack, Divider,  Avatar ,IconButton,Button} from "native-base";
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
@@ -77,9 +77,12 @@ const CustomerScreen = ({navigation}) => {
   return (
       <>
         <NavBar  navigation={navigation} title={"Khách hàng"} >
-            <Icon  name="add"  size={25}   onPress={() => navigation.navigate("AddCustomer", { isEdit: false })} />
+            {/* <Icon  name="add"  size={25}   onPress={() => navigation.navigate("AddCustomer", { isEdit: false })} />
             <Icon  name="swap-vert"  size={25} />
-            <Icon  name="filter-alt" size={25} />
+            <Icon  name="filter-alt" size={25} /> */}
+            <IconButton size={"lg"} mt={-2.5} colorScheme='warmGray' variant={"ghost"} _icon={{ as: Icon ,  name: "add", size:7 }} onPress={() => navigation.navigate("AddCustomer", { isEdit: false })}/>
+            <IconButton size={"lg"} mt={-2.5}ml={-5} colorScheme='warmGray' variant={"ghost"} _icon={{ as: Icon ,  name: "swap-vert", size:7 }} />
+            <IconButton size={"lg"} mt={-2.5} ml={-5} colorScheme='warmGray' variant={"ghost"} _icon={{ as: Icon ,  name: "filter-alt", size:7 }} />
         </NavBar>  
         <SearchBar /> 
         <InfiniteFlatList data={customerList}  renderItem={renderItem} pagingState={pagingState} setPage={setPagingState} loadData={loadData} endList={endList} setEndList={setEndList}/> 

@@ -1,25 +1,18 @@
 import React from 'react'
-import {
-    NativeBaseProvider,
-    Button,
-    Box,
-    HamburgerIcon,
-    Pressable,
-    Heading,
-    VStack,
-    Text,
-    Center,
-    HStack,
-    Divider,
-    Icon,
-  } from "native-base";
-const InvoiceReturn = () => {
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import InvoiceReturnScreen from "./InvoiceReturnScreen/InvoiceReturnScreen"
+import InvoiceReturnDetailScreen from "./InvoiceReturnDetailScreen/InvoiceReturnDetailScreen"
+
+
+const Stack = createNativeStackNavigator();
+
+const InvoiceReturn = ({navigation}) => {
   return (
-    <Center>
-    <Text mt="12" fontSize={18}>
-      This is InvoiceReturn page.
-    </Text>
-  </Center>
+    <Stack.Navigator>  
+      <Stack.Screen name="InvoiceReturnScreen"  component={InvoiceReturnScreen}  options={{ headerShown: false}} />   
+      <Stack.Screen name="InvoiceReturnDetailScreen" component={InvoiceReturnDetailScreen}  options={{ headerShown: false, }} />
+  </Stack.Navigator>
   )
 }
 

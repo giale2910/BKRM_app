@@ -4,13 +4,14 @@ import NumberFormat from 'react-number-format';
 import { StyleSheet} from 'react-native'
 import { Input} from "native-base";
 
-export  default function ThousandInput({isInvalid,value ,handleChange,handleBlur, errorMess,placeholder}) {
+export  default function ThousandInput({variant,isInvalid,value ,handleChange,handleBlur, errorMess,placeholder}) {
   return (
     <NumberFormat
       value={value}
       displayType='text'
       thousandSeparator={true}
-      suffix={' đ'}
+      // suffix={' đ'}
+     
       renderText={formattedValue =>  
       <Input
         size="lg"
@@ -20,7 +21,6 @@ export  default function ThousandInput({isInvalid,value ,handleChange,handleBlur
         value={formattedValue}
         onChangeText={handleChange}
         isNumericString
-
         />} 
     />
   );

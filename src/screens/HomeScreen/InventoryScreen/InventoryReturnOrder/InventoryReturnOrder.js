@@ -1,25 +1,18 @@
 import React from 'react'
-import {
-    NativeBaseProvider,
-    Button,
-    Box,
-    HamburgerIcon,
-    Pressable,
-    Heading,
-    VStack,
-    Text,
-    Center,
-    HStack,
-    Divider,
-    Icon,
-  } from "native-base";
-const InventoryReturnOrder = () => {
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import InventoryReturnOrderScreen from "./InventoryReturnOrderScreen/InventoryReturnOrderScreen"
+import InventoryReturnOrderDetailScreen from "./InventoryReturnOrderDetailScreen/InventoryReturnOrderDetailScreen"
+
+
+const Stack = createNativeStackNavigator();
+
+const InventoryReturnOrder = ({navigation}) => {
   return (
-    <Center>
-    <Text mt="12" fontSize={18}>
-      This is InventoryReturnOrder page.
-    </Text>
-  </Center>
+    <Stack.Navigator>  
+      <Stack.Screen name="InventoryReturnOrderScreen"  component={InventoryReturnOrderScreen}  options={{ headerShown: false}} />   
+      <Stack.Screen name="InventoryReturnOrderDetailScreen" component={InventoryReturnOrderDetailScreen}  options={{ headerShown: false, }} />
+  </Stack.Navigator>
   )
 }
 

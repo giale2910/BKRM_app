@@ -19,11 +19,10 @@ const FormInput = ({isInvalid,value ,handleChange,handleBlur, errorMess,placehol
             type={show || !isPwd ? "text" : "password"} 
             InputRightElement={isPwd?<Box pr={2} pt={5} ><MaterialIcons name={show ? "visibility" : "visibility-off"} size={20} mr="10" color="grey" onPress={() => setShow(!show)} /> </Box>:null} 
         />
-
         <FormControl.ErrorMessage
             leftIcon={<WarningOutlineIcon name="warning" size="xs" />}
         >
-                {errorMess}
+          {errorMess}
              
         </FormControl.ErrorMessage>
         </FormControl>
