@@ -1,9 +1,9 @@
-import React from 'react'
-import { VStack, Text, HStack, Divider,  Avatar,Image,Box } from "native-base";
+import React , {useState}from 'react'
+import { VStack, Text, HStack, Divider,  Avatar,Image,Box, Pressable } from "native-base";
 import {TouchableOpacity,StyleSheet} from 'react-native';
 import {formatDate} from '../../util/util'
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
-
+import ThousandInput from "../../components/Input/ThousandInput"
 export const BillTableRow = ({code, name, date, totalCost,color,uuid,handleOnPress }) => {
   return (
     <>
@@ -62,10 +62,46 @@ export const PartnerTableRow = ({img, name, phone, code,score,isSupplier, uuid,h
   )
 }
 
-export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPress, uuid}) => {
+export const CartTableRow = ({row,handleChangeItemPrice}) => {
+  console.log("row",row)
   return (
     <>
-    <TouchableOpacity  key={uuid} onPress={handleOnPress} >
+      <HStack key={row.uuid}  justifyContent="space-between" >
+          <HStack w="60%">
+              <Image source={{ uri: row.img_url  }} alt={"name"}borderRadius="10" size="sm" />
+              <VStack ml="3" justifyContent="space-between"  >
+                  <Text fontSize={16} fontWeight={500} >{row.name} </Text>
+                 <HStack alignItems='center' space={2}>
+                    <VStack w="55%">
+                        <ThousandInput  
+                              variant="unstyled"
+                              value={row.unit_price} 
+                              handleChange={(value)=> handleChangeItemPrice(row.uuid, value)}  
+                            />
+                            {/* <Text color='grey' mt="2"> {row.unit_price}</Text> */}
+                            <Divider bg="gray.400" thickness={1} />
+                    </VStack>
+                    <Text bold>x</Text>
+                 </HStack>
+              </VStack>
+          </HStack>
+          <VStack justifyContent="space-between" alignItems="flex-end">
+                  {/* <Text fontSize={16} color='primary.500' fontWeight="700">  {numberSelect} </Text>     */}
+                  <Text color='grey' mt="2"> {row.quantity}</Text>
+
+          </VStack>
+      </HStack>
+      <Divider my="3"/>  
+     
+     </>
+  )
+}
+
+export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPress, uuid,isSelect}) => {
+ 
+  return (
+    <>
+    <TouchableOpacity   key={uuid} onPress={handleOnPress} >
       <HStack justifyContent="space-between" >
           <HStack w="60%">
               <Image source={{ uri: img  }} alt={"name"}borderRadius="10" size="sm" />
@@ -77,6 +113,8 @@ export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPr
           <VStack justifyContent="space-between" alignItems="flex-end">
                   <Text fontSize={16} color='primary.500' fontWeight="700">  {price.toLocaleString()} </Text>    
                   <Text color='grey' mt="2">Tồn: {branch_quantity}</Text>
+                  <Text fontSize={16} color='secondary.500' fontWeight="700">  {isSelect?.quantity} </Text>    
+
           </VStack>
       </HStack>
       <Divider my="3"/>  
@@ -85,6 +123,7 @@ export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPr
      </>
   )
 }
+
 
 
 export const SummaryProductTableRow = ({item}) => {

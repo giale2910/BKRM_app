@@ -32,7 +32,7 @@ const {navigation, title,number} = props;
                 <IconButton size={"lg"} mr="-3" colorScheme='warmGray' variant={"ghost"} _icon={{ as: Icon ,  name: "menu", size:6 }}onPress={() => {navigation.openDrawer()}} />
                 {/* <Icon name="menu" color="black" size={25} onPress={() => {navigation.openDrawer()}}/> */}
                 <Heading ml="4" mr="2">{title}</Heading>
-                {number? <Heading color='primary.500'  mr={20}># {number + 1}</Heading>:null}
+                {number +1 ? <Heading color='primary.500'  mr={20}># {number + 1}</Heading>:null}
             </HStack>
             <HStack space={2}>
               {props.children}

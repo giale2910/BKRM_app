@@ -77,7 +77,7 @@ const LoginScreen = ({ navigation }) => {
       <Container
         h="93%"
         w="93%"
-        style={{ justifyContent: "center", alignItems: "center" }}
+        style={{ justifyContent: "center", alignItems: "center", borderRadius:5 }}
         px={5}
       >
         <Circle size="40px" bg="secondary.500" mb={3}>

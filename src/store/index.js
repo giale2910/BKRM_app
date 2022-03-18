@@ -5,6 +5,8 @@ import loadingSlice from "./slice/loadingSlice";
 import infoSlice from "./slice/infoSlice";
 import statusSlice from "./slice/statusSlice";
 import dataSlice from "./slice/dataSlice"
+import cartSlice from "./slice/cartSlice"
+
 const store = configureStore({
   reducer: {
     customize: cusomizeSlice.reducer,
@@ -12,7 +14,8 @@ const store = configureStore({
     loading: loadingSlice.reducer,
     info: infoSlice.reducer,
     status:statusSlice.reducer,
-    data:dataSlice.reducer
+    data:dataSlice.reducer,
+    cart:cartSlice.reducer
   },
 });
 export default store;

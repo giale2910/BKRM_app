@@ -19,18 +19,18 @@ import {
     Menu
   } from "native-base";
   import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
+import {TouchableOpacity} from 'react-native'
 const ChangeCartBtn = (props) => {
     const {selectedIndex,cartList,handleChoose,handleDelete,handleAdd, isCart} =props;
     let hardText = isCart ? "Khách lẻ" :"Nhà cung cấp lẻ";
 
-    const getTitle = (cart) => {
-        if (isCart) {
-            return cart.customer === null ? hardText : cart.customer.name
-        } else {
-            return cart.supplier === null ? hardText: cart.supplier.name
-        }
-    }
+    // const getTitle = (cart) => {
+    //     if (isCart) {
+    //         return cart?.customer === null ? hardText : cart?.customer.name
+    //     } else {
+    //         return cart?.supplier === null ? hardText: cart?.supplier.name
+    //     }
+    // }
 
 
   return (
@@ -40,7 +40,8 @@ const ChangeCartBtn = (props) => {
               <Icon name="add" size={25}/>
             </Pressable>
             : */}
-            <Menu w="190" 
+            <Menu w="180" 
+            placement="left top"
             trigger={triggerProps => {
                 return <Pressable {...triggerProps} >
                   <Icon name="swap-vertical" size={25}/>
@@ -55,11 +56,13 @@ const ChangeCartBtn = (props) => {
                         <HStack alignItems="center" justifyContent="space-between">
                             <HStack  item xs={10}  >
                                 <Box style={{marginRight:10}}><Text bold>#{index + 1}</Text></Box>
-                                <Text>{getTitle(cart)} </Text>        
+                                {/* <Text>{getTitle(cart)} </Text>         */}
+                                <Text>Khách lẻ</Text>        
                             </HStack>
-                            <Pressable onPress={()=>handleDelete(index )} >
-                                <MaterialIcons name="cancel" size={15} color="#6e6d6d"/>
-                            </Pressable>
+                            {/* <TouchableOpacity > */}
+                              {/* <Button  onPress={()=>handleDelete(index)}> Hello</Button> */}
+                                {/* <MaterialIcons name="cancel" size={15} color="#6e6d6d"/> */}
+                            {/* </TouchableOpacity> */}
                         </HStack>
                     </Menu.Item>
                 ))}

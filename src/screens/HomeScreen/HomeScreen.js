@@ -79,6 +79,8 @@ import deliveryIcon from "../../assets/img/icon/history3.png";
 import branchApi from "../../api/branchApi";
 import productApi from "../../api/productApi"
 import { infoActions } from "../../store/slice/infoSlice";
+import { dataActions } from "../../store/slice/dataSlice";
+
 import { Select } from "native-base";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -370,12 +372,16 @@ const HomeScreen = ({ navigation, route }) => {
 
 
       // GET ALL PRODUCT SAVE TO REDUX
-      const response_product = await productApi.getProductsOfBranch( infoDetail.store.uuid,  infoDetail.branch.uuid,{ page: 0,   limit: 1000});
-      console.warn(response_product.data.data)
+      let response_product = await productApi.getProductsOfBranch( infoDetail.store.uuid,  infoDetail.branch.uuid,{ page: 0,   limit: 10});
+      console.warn(response_product.data)
+
       dispatch(
         dataActions.setProduct(response_product.data.data)
       );
 
+
+
+      // console.warn(dataProduct)
 
     }catch(err) {
       // alert(JSON.stringify(err))
@@ -399,7 +405,7 @@ const HomeScreen = ({ navigation, route }) => {
       screenOptions={{ drawerStyle: {  width: 235, } }}
       drawerContent={(props) => <CustomDrawerContent {...props} />
     }
-     initialRouteName="InventoryOrder"
+     initialRouteName="Import"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng"}}/>
       <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn",headerShown: false}} />

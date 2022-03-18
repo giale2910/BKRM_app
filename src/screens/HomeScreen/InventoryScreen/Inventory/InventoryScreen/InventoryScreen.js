@@ -117,11 +117,8 @@ const InventoryScreen = ({navigation}) => {
             img={row.img_url }name={row.name}code={row.product_code} price={(priceShow ==="Giá bán"? row.list_price:row.standard_price).toLocaleString()}branch_quantity={row.branch_quantity} uuid={row.uuid}handleOnPress={()=>navigation.navigate("InventoryDetailScreen", { row: row })}/>
         );
     };
-    
-    
-   
        
-  return (
+    return (
       <>
         <NavBar  navigation={navigation} title={"Sản phẩm"} >
             <Icon  name="add"  size={25}   onPress={() => navigation.navigate("AddInventory", { name: "Jane" })} />

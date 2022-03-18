@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState} from 'react';
 import { Button, Actionsheet, useDisclose,Center,Text ,Divider,VStack,HStack,Stack,Container,Box,Pressable, PresenceTransition} from 'native-base';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import {TouchableOpacity} from "react-native"
@@ -18,6 +18,7 @@ const MultipleSelect =  ({isInvalid,value ,handleBlur, errorMess, label,options,
       newValue.push(selectedValueId)
       formik.setFieldValue(name, newValue);
     }
+
   };
 
   const getArray = () => {

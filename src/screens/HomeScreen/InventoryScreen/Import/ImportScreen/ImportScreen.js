@@ -20,6 +20,7 @@ import {
   import Icon from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
+import MaterialCommunityIcons  from "react-native-vector-icons/MaterialCommunityIcons";
 
 import {StyleSheet, ScrollView } from 'react-native';
 import ChangeCartBtn from "../../../../../components/Button/ChangeCartBtn"
@@ -27,173 +28,55 @@ import ChangeCartBtn from "../../../../../components/Button/ChangeCartBtn"
 import update from "immutability-helper";
 import supplierApi from "../../../../../api/supplierApi";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {CartTableRow} from "../../../../../components/TableRow/TableRow"
+import { cartActions } from "../../../../../store/slice/cartSlice";
 
 
+const ImportScreen = ({navigation,route}) => {
 
-const ImportScreen = ({navigation}) => {
-  const [show, setShow] = React.useState(false);
-
-  const [selectedBranch, setSelectedBranch] = useState({});
 
   // redux
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
   const branch = info.branch;
   const user_uuid = useSelector((state) => state.info.user.uuid);
-
-  const loadLocalStorage =async () => {
-    if (await  AsyncStorage.getItem('@importListData')) {
-      const data = await  AsyncStorage.getItem('@importListData')
-      if (data.user_uuid === user_uuid) {
-        return data.cartList;
-      }
-    }
-
-    return [
-      {
-        supplier: null,
-        cartItem: [],
-        total_amount: 0,
-        paid_amount: 0,
-        discount: 0,
-        payment_method: "cash",
-      },
-    ];
-  };
-  const [cartList, setCartList] = React.useState(loadLocalStorage());
-
-  // const loadLocalStorage = async() => {
-  //   const importData= await  AsyncStorage.getItem('@importListData')
-  //   // console.log("importData.cartList",JSON.stringify(importData))
-
-  //   if (importData) {
-  //     const data = JSON.parse(importData);
-  //     if (data?.user_uuid === user_uuid) {
-  //       return data.cartList;
-  //       // setHello(["true", "true"])
-  //       // alert(hello)
-  //       // return setCartList(data.cartList)
-  //       return [{name:"true"}, {name:"true"}]
-  //     }
-  //   }
-   
-  //   // setCartList([  {
-  //   //   supplier: null,
-  //   //   cartItem: [],
-  //   //   total_amount: 0,
-  //   //   paid_amount: 0,
-  //   //   discount: 0,
-  //   //   payment_method: "cash",
-  //   // }])
-  //   return [
-  //     {
-  //       supplier: null,
-  //       cartItem: [],
-  //       total_amount: 0,
-  //       paid_amount: 0,
-  //       discount: 0,
-  //       payment_method: "cash",
-  //     },
-  //   ];
-  //   return [{name:"true"}, {name:"true"}]
-  // };
-  // // const [cartList, setCartList] = React.useState(loadLocalStorage());
-  // const [hello, setHello] = React.useState();
-
-  // useEffect(() => {
-  //   (async () =>  await AsyncStorage.setItem('@importListData', JSON.stringify({ user_uuid: user_uuid, cartList: cartList })))();
-  // }, [cartList]);
-
-  // useEffect(() => {
-  //   (async () => loadLocalStorage())();
-  // }, []);
-  // const [cartList, setCartList] = React.useState(loadLocalStorage());
-
- console.log("hello",cartList)
-
-
+  const importCartData  = useSelector((state) => state.cart.importCart);
+  const dispatch = useDispatch();
 
   //// ----------II. FUNCTION
   // 1.Cart
+  const [cartList, setCartList] = React.useState(importCartData);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  const [suppliers, setSuppliers] = React.useState([]);
-
-//==============
-  // const [isUpdateTotalAmount, setIsUpdateTotalAmount] = React.useState(false);
-
-  // useEffect(() => {
-  //   updateTotalAmount();
-  // }, [isUpdateTotalAmount]);
+  useEffect(() => {   
+    dispatch(cartActions.setImportCart(cartList));
+  }, [cartList]);
 
   useEffect(() => {
-    const fetchSupplier = async () => {
-      const response = await supplierApi.getSuppliers(store_uuid);
-      // console.log("supplierApi",response.data)
-      setSuppliers(response.data);
-      setCartList([
-        {
-          supplier: null,
-          cartItem: [],
-          total_amount: "0",
-          paid_amount: "0",
-          discount: "0",
-          payment_method: "cash",
-        },
-      ]);
-    };
-
-    fetchSupplier();
-  }, []);
-
-  const [reloadSupplier, setReloadSupplier] = useState(false);
-  useEffect(() => {
-    const fetchSupplier = async () => {
-      const response = await supplierApi.getSuppliers(store_uuid);
-      setSuppliers(response.data);
-    };
-
-    fetchSupplier();
-  }, [reloadSupplier]);
+    if (route.params?.newCart) {
+      setCartList(route.params.newCart)
+    }
+  }, [route.params?.newCart]);
 
 
-
- 
+  // Multiple cart
   const handleChoose = (index) => {
     setSelectedIndex(index);
   };
   const handleAdd = () => {
     // ADD CART
-    setCartList([
-      ...cartList,
-      {
-        supplier:  null,
-        cartItem: [],
-        total_amount: 0,
-        paid_amount: 0,
-        discount: 0,
-        payment_method: "cash",
-      },
-    ]);
+    setCartList([ ...cartList, { supplier:  null, cartItem: [], total_amount: 0, paid_amount: 0, discount: 0, payment_method: "cash", },]);
     setSelectedIndex(cartList.length);
   };
   const handleDelete = (index) => {
     // DELETE CART
-    cartList.splice(index, 1);
-    if (cartList.length === 0) {
-      setCartList([
-        {
-          supplier: null,
-          cartItem: [],
-          total_amount: "0",
-          paid_amount: "0",
-          discount: "0",
-          payment_method: "cash",
-        },
-      ]);
+    let newCartList = [...cartList]
+    newCartList.splice(index, 1);
+    if (newCartList.length === 0) {
+      setCartList([ { supplier: null, cartItem: [],  total_amount: "0", paid_amount: "0",  discount: "0",  payment_method: "cash",  }, ]);
       setSelectedIndex(0);
     } else {
-      setCartList(cartList);
+      setCartList(newCartList);
     }
     if (selectedIndex === index) {
       setSelectedIndex(0);
@@ -201,69 +84,31 @@ const ImportScreen = ({navigation}) => {
       setSelectedIndex(selectedIndex - 1);
     }
   };
+
+  // 
+  const [suppliers, setSuppliers] = React.useState([]);
+  useEffect(() => {
+    const fetchSupplier = async () => {
+      const response = await supplierApi.getSuppliers(store_uuid);
+      setSuppliers(response.data);
+    };
+    fetchSupplier();
+  }, []);
   const updateCustomer = (value) => {
     let newArr = [...cartList]; // copying the old datas array
     newArr[selectedIndex].customer = value;
     setCartList(newArr);
   };
 
-
-  //snack
-  // const [openSnack, setOpenSnack] = React.useState(false);
-  // const [snackStatus, setSnackStatus] = React.useState({
-  //   style: "error",
-  //   message: "Nhập hàng thất bại",
-  // });
-
-  // const handleCloseSnackBar = (event, reason) => {
-  //   setOpenSnack(false);
-  // };
-
-  //2. Table sort
-  // const [order, setOrder] = React.useState("asc");
-  // const [orderBy, setOrderBy] = React.useState(null);
-  // const handleRequestSort = (event, property) => {
-  //   const isAsc = orderBy === property && order === "asc";
-  //   setOrder(isAsc ? "desc" : "asc");
-  //   setOrderBy(property);
-  // };
-
-  //mode
-  // const [mode, setMode] = React.useState(false);
-  // const handleChangeMode = (event) => {
-  //   setMode(event.target.checked);
-  // };
-
-  // handle search select item add to cart
-  const handleSearchBarSelect = (selectedOption) => {
-    let itemIndex = cartList[selectedIndex].cartItem.findIndex(
-      (item) => item.uuid === selectedOption.uuid
-    );
-
-    if (itemIndex !== -1) {
-      handleChangeItemQuantity(
-        selectedOption.uuid,
-        cartList[selectedIndex].cartItem[itemIndex].quantity + 1
-      );
-      return;
-    }
-    let newCartItem = {
-      id: cartList[selectedIndex].cartItem.length,
-      uuid: selectedOption.uuid,
-      quantity: 1,
-      barcode: selectedOption.bar_code,
-      unit_price: selectedOption.list_price,
-      img_url: selectedOption.img_url,
-      name: selectedOption.name,
-    };
-
+  const handleSelectSupplier = (selectedSupplier) => {
     let newCartList = update(cartList, {
-      [selectedIndex]: { cartItem: { $push: [newCartItem] } },
+      [selectedIndex]: { supplier: { $set: selectedSupplier } },
     });
     setCartList(newCartList);
-    // setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
+ 
 
+//
   const handleDeleteItemCart = (itemUuid) => {
     let itemIndex = cartList[selectedIndex].cartItem.findIndex(
       (item) => item.uuid === itemUuid
@@ -305,16 +150,10 @@ const ImportScreen = ({navigation}) => {
     // setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
-  const handleSelectSupplier = (selectedSupplier) => {
-    let newCartList = update(cartList, {
-      [selectedIndex]: { supplier: { $set: selectedSupplier } },
-    });
-    setCartList(newCartList);
-  };
+
 
 
   ////////
-
   const handleUpdatePaidAmount = (amount) => {
     let newCartList = update(cartList, {
       [selectedIndex]: { paid_amount: { $set: amount } },
@@ -357,11 +196,9 @@ const ImportScreen = ({navigation}) => {
   };
 
 
-  ///
 
   const handleConfirm = async () => {
     let cart = cartList[selectedIndex];
-
     var emptyCart = cart.cartItem.length === 0;
     if (emptyCart) {
       setOpenSnack(true);
@@ -371,7 +208,6 @@ const ImportScreen = ({navigation}) => {
       });
 
       setOpenSnack(true);
-      // console.log(err);
     } else {
       let d = moment.now() / 1000;
       let importTime = moment
@@ -421,44 +257,39 @@ const ImportScreen = ({navigation}) => {
 
 
 
-// console.log("mycartList",cartList)
 
   return (
     <>
     <NavBar  navigation={navigation} title={"Nhập hàng"} number={selectedIndex} >
-        {/* {cartList? <ChangeCartBtn 
+          <MaterialCommunityIcons name="delete-forever-outline"  size={25}  color="#424242"  onPress={()=>handleDelete(selectedIndex)} />
+          <ChangeCartBtn 
               selectedIndex={selectedIndex}
               cartList={cartList}
               handleChoose={handleChoose}
               handleDelete={handleDelete}
               handleAdd={handleAdd}
               isCart={ false}
-            />:null} */}
+            />
     </NavBar>
-    <Center>
-        <Pressable onPress={() =>  navigation.navigate('SearchScreen', { navcartList:cartList,selectedIndex:selectedIndex }) }>   
+    <Center mt={-3} mb={5}>
+        <Pressable onPress={() =>  navigation.navigate('SearchScreen', { navcartList:cartList,selectedIndex:selectedIndex ,isCart:true}) }>   
             <Box borderWidth="1"  borderColor="coolGray.200"borderRadius="20" w="92%" h="12" justifyContent="center" px="2">
                 <HStack >
                   <MaterialIcons  name="search"  size={25}  color="grey" /> 
                   <Text  w="85%"color="grey"  fontSize={15}> Tìm kiếm sản phẩm</Text>
-                  <Pressable onPress={() =>  navigation.navigate('BarCodeScreen', { name: 'Jane' }) }>
+                  <Pressable onPress={() =>  navigation.navigate('BarCodeScreen', { name: 'Jane' }) } >
                   <Icon  name="barcode"  size={25}  color="grey"  /> 
                   </Pressable>
                 </HStack>
             </Box>
         </Pressable>
     </Center>
-    <ScrollView style={styles.scrollView}>
-      <Text>hello</Text>
+    <ScrollView style={{paddingHorizontal: 18,}}>
           {cartList[selectedIndex]?.cartItem?.map((row, index)=>{
               return(
-                <HStack>
-                  <Text>{row.name}</Text>
-                  <Text>{row.quantity}</Text>
-                </HStack>
+                <CartTableRow key={row.uuid} row={row} handleChangeItemPrice={handleChangeItemPrice}/>
               )
           })}
-
     </ScrollView>
   </>
   )
@@ -466,24 +297,3 @@ const ImportScreen = ({navigation}) => {
 
 export default ImportScreen
 
-// export const ChangeCartBtn = ({selectedIndex,cartList,handleChoose,handleDelete,handleAdd}) =>{
-//   return (
-//     <ChangeCartBtn
-//     selectedIndex={selectedIndex}
-//     cartList={cartList}
-//     handleChoose={handleChoose}
-//     handleDelete={handleDelete}
-//     handleAdd={handleAdd}
-//     isCart={true}
-//   />
-//   )
-// }
-
-
-const styles = StyleSheet.create({
-  scrollView: {
-    // backgroundColor: 'pink',
-    marginHorizontal: 18,
-  },
-
-});
