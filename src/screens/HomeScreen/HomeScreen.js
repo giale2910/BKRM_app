@@ -80,6 +80,7 @@ import branchApi from "../../api/branchApi";
 import productApi from "../../api/productApi"
 import { infoActions } from "../../store/slice/infoSlice";
 import { dataActions } from "../../store/slice/dataSlice";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Select } from "native-base";
 import { useDispatch, useSelector } from "react-redux";
@@ -355,6 +356,9 @@ const MenuItem  = ({item,indexOpen,navigation}) =>{
 }
 const HomeScreen = ({ navigation, route }) => {
   const infoDetail = useSelector((state) => state.info);
+  const user_uuid = useSelector((state) => state.info.user.uuid);
+  const dataDetail = useSelector((state) => state.data);
+
   const dispatch = useDispatch();
   const loadingData = async () => {
     try {
@@ -369,33 +373,58 @@ const HomeScreen = ({ navigation, route }) => {
           name: response.data.data[0].name,
         })
       );
+      // // GET ALL PRODUCT SAVE TO REDUX
+      // let response_product = await productApi.getProductsOfBranch( infoDetail.store.uuid,  infoDetail.branch.uuid,{ page: 0,   limit: 10});
+      // console.warn(response_product.data)
 
-
-      // GET ALL PRODUCT SAVE TO REDUX
-      let response_product = await productApi.getProductsOfBranch( infoDetail.store.uuid,  infoDetail.branch.uuid,{ page: 0,   limit: 10});
-      console.warn(response_product.data)
-
-      dispatch(
-        dataActions.setProduct(response_product.data.data)
-      );
-
-
-
-      // console.warn(dataProduct)
+      // dispatch(
+      //   dataActions.setProduct(response_product.data.data)
+      // );
 
     }catch(err) {
       // alert(JSON.stringify(err))
     }
   };
 
+  const _retrieveDataProduct = async () => {
+    try {
+      const value = await AsyncStorage.getItem('productData');
+      if (value !== null) {
+        const data = JSON.parse(value);
+        if (data.user_uuid === user_uuid) {
+          dispatch(dataActions.setProduct(data.productData));
+        }
+      }
+    } catch (error) {}
+  };
+
+
+  const _storeDataProduct = async () => {
+    try {
+      let response = await productApi.getProductsOfBranch( infoDetail.store.uuid,  infoDetail.branch.uuid,{ page: 0,   limit: 100});
+
+      if(response){
+        const storeData = async () =>{
+          await AsyncStorage.setItem(
+            'productData',
+            JSON.stringify({ user_uuid: user_uuid, productData:response.data.data  })
+          );
+        }
+        storeData()
+      }
+    } catch (error) { }
+  }
+
   React.useEffect(() => {
     loadingData(); 
-   
 
+  
   }, [infoDetail.store.uuid]);
 
   React.useEffect(() => {
-    loadingData(); 
+    loadingData();
+    _retrieveDataProduct();
+    _storeDataProduct() 
 
   }, []);
 
@@ -405,7 +434,7 @@ const HomeScreen = ({ navigation, route }) => {
       screenOptions={{ drawerStyle: {  width: 235, } }}
       drawerContent={(props) => <CustomDrawerContent {...props} />
     }
-     initialRouteName="Import"
+     initialRouteName="InvoiceReturn"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng"}}/>
       <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn",headerShown: false}} />

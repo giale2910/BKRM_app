@@ -1,22 +1,8 @@
 import React from 'react'
-import {
-    NativeBaseProvider,
-    Button,
-    Box,
-    HamburgerIcon,
-    Pressable,
-    Heading,
-    VStack,
-    Text,
-    Center,
-    HStack,
-    Divider,
-    Icon,
-    Container,
-  } from "native-base";
-  import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-  import NavBar from "../../../../components/NavBar/NavBar"
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import NavBar from "../../../../components/NavBar/NavBar"
 import SearchScreen from "../../../SearchScreen/SearchScreen"
 import BarCodeScreen from "../../../BarCodeScreen/BarCodeScreen"
 

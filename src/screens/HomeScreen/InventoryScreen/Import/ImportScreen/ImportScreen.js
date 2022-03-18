@@ -40,18 +40,71 @@ const ImportScreen = ({navigation,route}) => {
   const store_uuid = info.store.uuid;
   const branch = info.branch;
   const user_uuid = useSelector((state) => state.info.user.uuid);
-  const importCartData  = useSelector((state) => state.cart.importCart);
+  // const importCartData  = useSelector((state) => state.cart.importCart);
   const dispatch = useDispatch();
 
   //// ----------II. FUNCTION
   // 1.Cart
-  const [cartList, setCartList] = React.useState(importCartData);
+  const [cartList, setCartList] = React.useState([ {
+    supplier: null,
+    cartItem: [],
+    total_amount: 0,
+    paid_amount: 0,
+    discount: 0,
+    payment_method: "cash",
+  }]);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  useEffect(() => {   
-    dispatch(cartActions.setImportCart(cartList));
-  }, [cartList]);
 
+  // 1. Get & Save cart to localStorage
+  useEffect(() => {
+    const _storeData = async () => {
+      try {
+        await AsyncStorage.setItem(
+          'importCart',
+          JSON.stringify({ user_uuid: user_uuid, cartList: cartList })
+        );
+      } catch (error) { }
+    }
+    _storeData();
+}, [cartList]);
+ 
+
+  // useEffect(() => {
+  //   const _retrieveData = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem('importCart');
+  //       if (value !== null) {
+  //         const data = JSON.parse(value);
+  //         if (data.user_uuid === user_uuid) {
+  //           // alert(JSON.stringify(data))
+  //           setCartList(data.cartList);
+  //         }
+  //       }
+  //     } catch (error) {}
+  //   };
+  //   _retrieveData();
+  // }, [navigation]);
+
+
+  // useEffect(() => {
+  //   const _retrieveData = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem('productData');
+  //       if (value !== null) {
+  //         alert("!= null")
+  //         const data = JSON.parse(value);
+  //         if (data.user_uuid === user_uuid) {
+  //           setProductList(data.cartList);
+  //         }
+  //       }
+  //     } catch (error) {}
+  //   };
+  //   _retrieveData();
+  // }, [navigation]);
+
+
+  // 2. Get new cart after search
   useEffect(() => {
     if (route.params?.newCart) {
       setCartList(route.params.newCart)
@@ -59,7 +112,7 @@ const ImportScreen = ({navigation,route}) => {
   }, [route.params?.newCart]);
 
 
-  // Multiple cart
+  // 3. Multiple cart
   const handleChoose = (index) => {
     setSelectedIndex(index);
   };
@@ -149,9 +202,6 @@ const ImportScreen = ({navigation,route}) => {
     setCartList(newCartList);
     // setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
-
-
-
 
   ////////
   const handleUpdatePaidAmount = (amount) => {
