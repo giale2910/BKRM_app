@@ -26,14 +26,14 @@ import {StyleSheet, ScrollView } from 'react-native';
 import ChangeCartBtn from "../../../../../components/Button/ChangeCartBtn"
 
 import update from "immutability-helper";
-import supplierApi from "../../../../../api/supplierApi";
+import customerApi from "../../../../../api/customerApi";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CartTableRow} from "../../../../../components/TableRow/TableRow"
 import { cartActions } from "../../../../../store/slice/cartSlice";
-import ModalImportSummary  from './ModalImportSummary';
+import ModalCartSummary  from './ModalCartSummary';
 import {calculateTotalQuantity,calculateTotalAmount} from "../../../../../util/util"
 
-const ImportScreen = ({navigation,route}) => {
+const CartScreen = ({navigation,route}) => {
 
   const [showModal, setShowModal] = useState(false);
   // redux
@@ -62,7 +62,7 @@ const ImportScreen = ({navigation,route}) => {
     const _storeData = async () => {
       try {
         await AsyncStorage.setItem(
-          'importCart',
+          'saleCart',
           JSON.stringify({ user_uuid: user_uuid, cartList: cartList })
         );
       } catch (error) { }
@@ -71,12 +71,15 @@ const ImportScreen = ({navigation,route}) => {
 }, [cartList]);
 
 
+
+
   // 2. Get new cart after search
   useEffect(() => {
     if (route.params?.newCart) {
       setCartList(route.params.newCart)
     }
   }, [route.params?.newCart]);
+
 
 
   // 3. Multiple cart
@@ -107,10 +110,9 @@ const ImportScreen = ({navigation,route}) => {
 
   // 
   const [suppliers, setSuppliers] = React.useState([]);
-  const [isReloadSupplier,setIsReloadSupplier]= React.useState(false);
   useEffect(() => {
     const fetchSupplier = async () => {
-      const response = await supplierApi.getSuppliers(store_uuid);
+      const response = await customerApi.getCustomers(store_uuid);
       setSuppliers(response.data.data);
       // console.log("supplierssssss",suppliers)
     };
@@ -119,9 +121,11 @@ const ImportScreen = ({navigation,route}) => {
 
 
   const handleSelectSupplier = (selectedSupplier) => {
+    console.log("hello")
     let newCartList = update(cartList, {
       [selectedIndex]: { supplier: { $set: selectedSupplier } },
     });
+    
     setCartList(newCartList);
   };
 
@@ -168,13 +172,18 @@ const ImportScreen = ({navigation,route}) => {
 
   ////////
 
-  
+  var correctQuantity = cartList[selectedIndex].cartItem.every(function (element, index) {
+    console.log(element);
+    if (element.quantity > element.branch_quantity) return false;
+    else return true;
+  });
+
   const total_quantity = calculateTotalQuantity(cartList[selectedIndex].cartItem)
   const total_amount = calculateTotalAmount(cartList[selectedIndex].cartItem)
 
   return (
     <Box bg='white' flex={1}>
-    <NavBar  navigation={navigation} title={"Nhập hàng"} number={selectedIndex} >
+    <NavBar  navigation={navigation} title={"Giỏ hàng"} number={selectedIndex} >
           <MaterialCommunityIcons  name="delete-forever-outline"  size={25}  color="#424242"  onPress={()=>handleDelete(selectedIndex)} />
           <ChangeCartBtn 
               selectedIndex={selectedIndex}
@@ -182,12 +191,12 @@ const ImportScreen = ({navigation,route}) => {
               handleChoose={handleChoose}
               handleDelete={handleDelete}
               handleAdd={handleAdd}
-              isCart={ false}
+              isCart={ true}
             
             />
     </NavBar>
     <Center mt={-3} mb={2} >
-        <Pressable onPress={() =>  navigation.navigate('SearchScreen', { navcartList:cartList,selectedIndex:selectedIndex ,isCart:false}) }>   
+        <Pressable onPress={() =>  navigation.navigate('SearchScreen', { navcartList:cartList,selectedIndex:selectedIndex ,isCart:true}) }>   
             <Box borderWidth="1"  borderColor="coolGray.200"borderRadius="20" w="92%" h="12" justifyContent="center" px="2">
                 <HStack >
                   <MaterialIcons  name="search"  size={25}  color="grey" /> 
@@ -202,7 +211,7 @@ const ImportScreen = ({navigation,route}) => {
     <ScrollView style={{paddingHorizontal: 16,}} >
           {cartList[selectedIndex]?.cartItem?.map((row, index)=>{
               return(
-                <CartTableRow key={row.uuid} row={row} handleChangeItemPrice={handleChangeItemPrice} handleChangeItemQuantity={handleChangeItemQuantity} handleDeleteItemCart={handleDeleteItemCart}/>
+                <CartTableRow  key={row.uuid} row={row} handleChangeItemPrice={handleChangeItemPrice} handleChangeItemQuantity={handleChangeItemQuantity} handleDeleteItemCart={handleDeleteItemCart}/>
               )
           })}
     </ScrollView>
@@ -213,15 +222,15 @@ const ImportScreen = ({navigation,route}) => {
       <Text fontSize={18} bold>{total_amount?.toLocaleString()}</Text>
     </HStack>
 
-    <Button m={3} size='lg' onPress={() => setShowModal(true)} isDisabled={cartList[selectedIndex].cartItem.length === 0?true:false}> Thanh toán </Button>
+    <Button m={3} size='lg' onPress={() => setShowModal(true)}  isDisabled={cartList[selectedIndex].cartItem.length === 0 && correctQuantity?true:false}> Thanh toán </Button>
     
-    {showModal?<ModalImportSummary selectedIndex={selectedIndex}showModal={showModal} setShowModal={setShowModal} cartData={cartList[selectedIndex]} total_amount={total_amount} total_quantity={total_quantity} handleDelete={()=>handleDelete(selectedIndex)} navigation={navigation} suppliers={suppliers} handleSelectSupplier={handleSelectSupplier}/>:null}
+    {showModal?<ModalCartSummary selectedIndex={selectedIndex} showModal={showModal} setShowModal={setShowModal} cartData={cartList[selectedIndex]} total_amount={total_amount} total_quantity={total_quantity} handleDelete={()=>handleDelete(selectedIndex)} navigation={navigation} suppliers={suppliers} handleSelectSupplier={handleSelectSupplier}/>:null}
 
   </Box>
   )
 }
 
-export default ImportScreen
+export default CartScreen
 
 
 

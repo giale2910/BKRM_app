@@ -25,6 +25,7 @@ const SearchScreen = ({navigation, route}) => {
 
   // redux
 
+
   const handleSelect = (selectedOption) => {
     let itemIndex = cartList[selectedIndex].cartItem.findIndex(
       (item) => item.uuid === selectedOption.uuid
@@ -39,11 +40,22 @@ const SearchScreen = ({navigation, route}) => {
       let newCartItem = {
         id: cartList[selectedIndex].cartItem.length,
         uuid: selectedOption.uuid,
-        quantity: 1,
-        barcode: selectedOption.bar_code,
-        unit_price: selectedOption.list_price,
+        // quantity: 1,
+        // barcode: selectedOption.bar_code,
+        // // unit_price: selectedOption.list_price,
+        // unit_price:isCart ? selectedOption.list_price:selectedOption.standard_price,
+        // img_url: selectedOption.img_url,
+        // name: selectedOption.name,
+        quantity: selectedOption.has_batches ? 0 : 1,
+        bar_code: selectedOption.bar_code,
+        product_code: selectedOption.product_code,
+        unit_price:isCart ? selectedOption.list_price:selectedOption.standard_price,
         img_url: selectedOption.img_url,
         name: selectedOption.name,
+        has_batches: selectedOption.has_batches,
+        // batches: selectedOption.batches,
+        batches:[],
+        selectedBatches:[]
       };
   
       let newCartList = update(cartList, {
@@ -78,7 +90,7 @@ const SearchScreen = ({navigation, route}) => {
                   size="md" p={3} variant="rounded" placeholder="Tìm sản phẩm (mã sp, tên)"  
                   onChangeText={val => setSearchResult(val)}   
               /> 
-              <MaterialIcons  name="add"  size={25}   onPress={() => navigation.navigate("AddInventory", { name: "Jane" })} />    
+              {!isCart?<MaterialIcons  name="add"  size={25}   onPress={() => navigation.navigate("AddInventory", { name: "Jane" })} /> :null}   
       </HStack>
 
     <ScrollView style={{padding:18, marginTop:-20}}>

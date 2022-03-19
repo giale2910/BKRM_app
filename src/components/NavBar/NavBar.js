@@ -34,7 +34,7 @@ const {navigation, title,number} = props;
                 <Heading ml="4" mr="2">{title}</Heading>
                 {number +1 ? <Heading color='primary.500'  mr={20}># {number + 1}</Heading>:null}
             </HStack>
-            <HStack space={2}>
+            <HStack space={3}>
               {props.children}
             </HStack>
        </HStack>

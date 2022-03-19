@@ -1,21 +1,15 @@
 import React from 'react'
 import Icon from "react-native-vector-icons/Ionicons";
 import {
-    NativeBaseProvider,
-    Button,
+
     Box,
-    HamburgerIcon,
+
     Pressable,
-    Heading,
-    VStack,
+
     Text,
-    Center,
+
     HStack,
-    Divider,
-    Input,
-    Stack,
-    Container,
-    IconButton,
+
     Menu
   } from "native-base";
   import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -24,22 +18,19 @@ const ChangeCartBtn = (props) => {
     const {selectedIndex,cartList,handleChoose,handleDelete,handleAdd, isCart} =props;
     let hardText = isCart ? "Khách lẻ" :"Nhà cung cấp lẻ";
 
-    // const getTitle = (cart) => {
-    //     if (isCart) {
-    //         return cart?.customer === null ? hardText : cart?.customer.name
-    //     } else {
-    //         return cart?.supplier === null ? hardText: cart?.supplier.name
-    //     }
-    // }
+    console.log("cartListtt",cartList)
+    const getTitle = (cartList) => {
+        // if (isCart) {
+        //     return cartList.customer === undefined ? hardText : cartList.customer?.name
+        // } else {
+        //     return cartList.supplier=== undefined ? hardText: cartList.supplier?.name
+        // }
+        return cartList.supplier=== null ? hardText: cartList.supplier?.name
+      }
 
 
   return (
     <>
-    {/* {cartList.length === 1 ?
-              <Pressable  onPress={handleAdd}>
-              <Icon name="add" size={25}/>
-            </Pressable>
-            : */}
             <Menu w="180" 
             placement="left top"
             trigger={triggerProps => {
@@ -56,8 +47,8 @@ const ChangeCartBtn = (props) => {
                         <HStack alignItems="center" justifyContent="space-between">
                             <HStack  item xs={10}  >
                                 <Box style={{marginRight:10}}><Text bold>#{index + 1}</Text></Box>
-                                {/* <Text>{getTitle(cart)} </Text>         */}
-                                <Text>Khách lẻ</Text>        
+                                <Text>{getTitle(cartList[index])} </Text>        
+                                {/* <Text>Khách lẻ</Text>         */}
                             </HStack>
                             {/* <TouchableOpacity > */}
                               {/* <Button  onPress={()=>handleDelete(index)}> Hello</Button> */}

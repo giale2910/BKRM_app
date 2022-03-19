@@ -1,9 +1,11 @@
 import React , {useState}from 'react'
-import { VStack, Text, HStack, Divider,  Avatar,Image,Box, Pressable } from "native-base";
+import { VStack, Text, HStack,Stack, Divider,  Avatar,Image,Box, Pressable,Input } from "native-base";
 import {TouchableOpacity,StyleSheet} from 'react-native';
 import {formatDate} from '../../util/util'
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
-import ThousandInput from "../../components/Input/ThousandInput"
+import ButtonQuantity from '../Button/ButtonQuantity';
+import ThousandInput from "../Input/ThousandInput"
+import FeatherIcon from "react-native-vector-icons/Feather";
 export const BillTableRow = ({code, name, date, totalCost,color,uuid,handleOnPress }) => {
   return (
     <>
@@ -62,40 +64,94 @@ export const PartnerTableRow = ({img, name, phone, code,score,isSupplier, uuid,h
   )
 }
 
-export const CartTableRow = ({row,handleChangeItemPrice}) => {
+export const CartTableRow = ({row,handleChangeItemPrice,handleChangeItemQuantity,handleDeleteItemCart}) => {
   console.log("row",row)
   return (
-    <>
-      <HStack key={row.uuid}  justifyContent="space-between" >
+  <>
+    {/* <Box borderWidth="1" borderColor="gray.50" shadow="2"  p="4" rounded="3" my={0.5}> */}
+    <Box  my={1} p={1.5} borderColor="coolGray.100" rounded="5">
+      <HStack key={row.uuid}  justifyContent="space-between" m={0.5}>
           <HStack w="60%">
               <Image source={{ uri: row.img_url  }} alt={"name"}borderRadius="10" size="sm" />
-              <VStack ml="3" justifyContent="space-between"  >
-                  <Text fontSize={16} fontWeight={500} >{row.name} </Text>
-                 <HStack alignItems='center' space={2}>
-                    <VStack w="55%">
-                        <ThousandInput  
-                              variant="unstyled"
-                              value={row.unit_price} 
-                              handleChange={(value)=> handleChangeItemPrice(row.uuid, value)}  
-                            />
-                            {/* <Text color='grey' mt="2"> {row.unit_price}</Text> */}
-                            <Divider bg="gray.400" thickness={1} />
-                    </VStack>
-                    <Text bold>x</Text>
-                 </HStack>
-              </VStack>
+              <Stack ml="3" justifyContent="space-between"  >
+                  <Text fontSize={16} mb={2} fontWeight={500} >{row.name} </Text>
+                  <HStack  alignItems='center' space={5}>
+                      <VStack  w={85}>
+                          <ThousandInput 
+                                variant="unstyled"
+                                textAlign="right"  
+                                value={row.unit_price} 
+                                handleChange={(value)=> handleChangeItemPrice(row.uuid, value)}  
+                          />
+                          
+                          <Divider bg="gray.400" thickness={1} />
+                    
+                      </VStack>
+                      <Text fontWeight={600} >x</Text>
+                  </HStack>
+              </Stack>
           </HStack>
+          {/* <VStack justifyContent="flex-end" alignItems="flex-end"> */}
           <VStack justifyContent="space-between" alignItems="flex-end">
-                  {/* <Text fontSize={16} color='primary.500' fontWeight="700">  {numberSelect} </Text>     */}
-                  <Text color='grey' mt="2"> {row.quantity}</Text>
+              <FeatherIcon  name='x' size={15} color='grey' onPress={() => handleDeleteItemCart(row.uuid)}/>
+             <ButtonQuantity quantity={row.quantity}  setQuantity={(val)=>handleChangeItemQuantity(row.uuid,val)} uuid={row.uuid} />
 
           </VStack>
       </HStack>
-      <Divider my="3"/>  
      
-     </>
+     
+     </Box>
+       <Divider  /> 
+       
+  </>
   )
 }
+
+
+export const ImportTableRow = ({row,handleChangeItemPrice,handleChangeItemQuantity,handleDeleteItemCart}) => {
+  console.log("row",row)
+  return (
+  <>
+    {/* <Box borderWidth="1" borderColor="gray.50" shadow="2"  p="4" rounded="3" my={0.5}> */}
+    <Box  my={1} p={1.5} borderColor="coolGray.100" rounded="5">
+      <HStack key={row.uuid}  justifyContent="space-between" m={0.5}>
+          <HStack w="60%">
+              <Image source={{ uri: row.img_url  }} alt={"name"}borderRadius="10" size="sm" />
+              <Stack ml="3" justifyContent="space-between"  >
+                  <Text fontSize={16} mb={2} fontWeight={500} >{row.name} </Text>
+                  <HStack  alignItems='center' space={5}>
+                      <VStack  w={85}>
+                          <ThousandInput 
+                                variant="unstyled"
+                                textAlign="right"  
+                                value={row.unit_price} 
+                                handleChange={(value)=> handleChangeItemPrice(row.uuid, value)}  
+                          />
+                          
+                          <Divider bg="gray.400" thickness={1} />
+                    
+                      </VStack>
+                      <Text fontWeight={600} >x</Text>
+                  </HStack>
+              </Stack>
+          </HStack>
+          {/* <VStack justifyContent="flex-end" alignItems="flex-end"> */}
+          <VStack justifyContent="space-between" alignItems="flex-end">
+          <FeatherIcon  name='x' size={15} color='grey' onPress={() => handleDeleteItemCart(row.uuid)}/>
+
+             <ButtonQuantity quantity={row.quantity}  setQuantity={(val)=>handleChangeItemQuantity(row.uuid,val)} uuid={row.uuid} />
+
+          </VStack>
+      </HStack>
+     
+     
+     </Box>
+       <Divider  /> 
+       
+  </>
+  )
+}
+
 
 export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPress, uuid,isSelect}) => {
  
@@ -112,13 +168,14 @@ export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPr
           </HStack>
           <VStack justifyContent="space-between" alignItems="flex-end">
                   <Text fontSize={16} color='primary.500' fontWeight="700">  {price.toLocaleString()} </Text>    
-                  <Text color='grey' mt="2">Tồn: {branch_quantity}</Text>
-                  <Text fontSize={16} color='secondary.500' fontWeight="700">  {isSelect?.quantity} </Text>    
-
+                 <HStack alignItems='center'>
+                    {isSelect?<Text fontSize={16} mt="2"color='secondary.500' fontWeight="700">  ( x{isSelect?.quantity}) </Text> :null}    
+                    <Text color='grey' mt="2">Tồn: {branch_quantity}</Text>
+                    </HStack>
           </VStack>
       </HStack>
       <Divider my="3"/>  
-      </TouchableOpacity>
+    </TouchableOpacity>
      
      </>
   )

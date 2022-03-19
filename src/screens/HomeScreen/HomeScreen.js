@@ -1,4 +1,4 @@
-import React from 'react'
+import React , { useState, useEffect }from 'react'
 import {
   NativeBaseProvider,
   Button,
@@ -68,7 +68,8 @@ import webIcon from "../../assets/img/icon/www.png";
 import settingIcon from "../../assets/img/icon/setting.png"
 import deliveryIcon from "../../assets/img/icon/history3.png";
 
-
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 //
 
@@ -81,6 +82,7 @@ import productApi from "../../api/productApi"
 import { infoActions } from "../../store/slice/infoSlice";
 import { dataActions } from "../../store/slice/dataSlice";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authActions } from "../../store/slice/authSlice";
 
 import { Select } from "native-base";
 import { useDispatch, useSelector } from "react-redux";
@@ -306,11 +308,36 @@ const menuItems = [salesModule, inventoryModule, hrModule, reportModule];
 
 function CustomDrawerContent(props) {
   const infoDetail = useSelector((state) => state.info);
+  const dispatch = useDispatch();
+  const logOutHandler = () => {
+    dispatch(authActions.logOut());
+    // localStorage.removeItem("token");
+    // sessionStorage.removeItem("BKRMprev");
+    // sessionStorage.removeItem("BKRMopening");
+  
+  };
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  useEffect(() => {
+    if(!isLoggedIn){
+      props.navigation.navigate("Login", { name: "Jane" });
+    }
+  }, [isLoggedIn]);
 
   return (
     <DrawerContentScrollView {...props} safeArea>
       {/* <BranchSelectAppBar store_uuid={infoDetail.store.uuid} /> */}
+      
       <VStack space="3" my="3" mx="3">
+      <HStack justifyContent='space-between' >
+        {/* <Ionicons name="person" size={25} color="lightblue"/> */}
+        <Heading>BKRM</Heading>
+        {/* <VStack>
+          <Text>{infoDetail.role === "owner" ? "Chủ cửa hàng" : "Nhân viên" }</Text>
+          <Text>{infoDetail.user.name}</Text>
+        </VStack> */}
+        <MaterialIcons name="logout" size={25} color="black" onPress={()=> logOutHandler()}/>
+      </HStack>
         {menuItems.map(((module, index) =>(
             <MenuGroup key={index} item={module} indexOpen={props.state.index} navigation={props.navigation}/>
         )))}
@@ -434,9 +461,9 @@ const HomeScreen = ({ navigation, route }) => {
       screenOptions={{ drawerStyle: {  width: 235, } }}
       drawerContent={(props) => <CustomDrawerContent {...props} />
     }
-     initialRouteName="InvoiceReturn"
+     initialRouteName="Import"
     >
-      <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng"}}/>
+      <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng",headerShown: false}}/>
       <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn",headerShown: false}} />
       <Drawer.Screen name="InvoiceReturn" component={InvoiceReturn} options={{ title: "Đơn Trả",headerShown: false}}/>
       <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng",headerShown: false}} />

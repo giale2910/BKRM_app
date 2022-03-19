@@ -25,6 +25,17 @@ export function calculateTotalQuantity ( cartList ) {
     cartList.map(item => value +=item.quantity )
     return value.toLocaleString()
   }
+
+  export function calculateTotalAmount ( listItem ) {
+    if(listItem ===undefined){return }
+    let total = 0;
+    listItem.forEach((item) => {
+        total += item.unit_price * item.quantity;
+      });
+    return  total
+  
+  }
+
 export function calculateTotalReturnQuantity ( cartList ) {
     if(cartList ===undefined){return }
     var value= 0
