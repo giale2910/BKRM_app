@@ -29,7 +29,7 @@ const SearchBar = ({searchKey,setSearchKey}) => {
           h={12}
           size="md" p={3} variant="rounded" placeholder="Tìm sản phẩm (mã sp, tên)"  
           onSubmitEditing={e => setSearchKey(e.nativeEvent.text)}
-          onBlur={e => console.log(e.nativeEvent.text)}
+          // onBlur={e => console.log(e.nativeEvent.text)}
           returnKeyType="search"
           onChangeText={(value)=>setValue(value)}
           value={value}          

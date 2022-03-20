@@ -20,7 +20,6 @@ const InfiniteFlatList = (props) => {
         setEndList(false)
     }
     const fetchMore = async() => {
-        console.log("loading", pagingState.loading)
         if (pagingState.loading){
           return null;
         }

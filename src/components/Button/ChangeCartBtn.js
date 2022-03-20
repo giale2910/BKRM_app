@@ -18,7 +18,7 @@ const ChangeCartBtn = (props) => {
     const {selectedIndex,cartList,handleChoose,handleDelete,handleAdd, isCart} =props;
     let hardText = isCart ? "Khách lẻ" :"Nhà cung cấp lẻ";
 
-    console.log("cartListtt",cartList)
+    ("cartListtt",cartList)
     const getTitle = (cartList) => {
         // if (isCart) {
         //     return cartList.customer === undefined ? hardText : cartList.customer?.name

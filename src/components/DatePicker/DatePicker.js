@@ -3,7 +3,7 @@ import {HStack, Box,Text,Pressable} from 'native-base'
 import DateTimePickerModal   from "react-native-modal-datetime-picker";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-const DatePicker = ({isDatePickerVisible,setDatePickerVisibility,label,formik,name, value}) => {
+const DatePicker = ({isDatePickerVisible,setDatePickerVisibility,label,formik,name, value,onChange}) => {
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -12,7 +12,9 @@ const DatePicker = ({isDatePickerVisible,setDatePickerVisibility,label,formik,na
     setDatePickerVisibility(false);
   };
   const handleConfirm = (date) => {
-    formik.setFieldValue(name, date);
+    // console.log(defaultValue.length !== 0)
+    if(name) {formik.setFieldValue(name, date);}
+    else{ onChange(date) }
     hideDatePicker();
   };
 
@@ -35,7 +37,7 @@ const DatePicker = ({isDatePickerVisible,setDatePickerVisibility,label,formik,na
         <Pressable onPress={showDatePicker}>
         <Box borderWidth="1"  borderColor="coolGray.200" borderRadius="5" h="12" justifyContent="center" px="2">
             <HStack  justifyContent="space-between">
-                <Text color="gray.400"  fontSize={16}> {getFullDate(value)}</Text>
+                <Text color="gray.400"  fontSize={16}> {getFullDate(value?value: defaultValue)}</Text>
                 <Icon  name="date-range"  size={25}  color="grey"  />    
             </HStack>
         </Box>

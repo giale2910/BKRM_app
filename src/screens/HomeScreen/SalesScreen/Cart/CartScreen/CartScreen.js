@@ -121,7 +121,6 @@ const CartScreen = ({navigation,route}) => {
 
 
   const handleSelectSupplier = (selectedSupplier) => {
-    console.log("hello")
     let newCartList = update(cartList, {
       [selectedIndex]: { supplier: { $set: selectedSupplier } },
     });
@@ -171,9 +170,21 @@ const CartScreen = ({navigation,route}) => {
   };
 
   ////////
+  const handleUpdateBatches = (itemUuid, selectedBatches) => {
+    let itemIndex = cartList[selectedIndex].cartItem.findIndex(
+      (item) => item.uuid === itemUuid
+    );
+
+    if (itemIndex === -1) return;
+    const newCartList = [...cartList];
+    newCartList[selectedIndex].cartItem[itemIndex].selectedBatches =
+      selectedBatches;
+
+    setCartList(newCartList);
+  };
+
 
   var correctQuantity = cartList[selectedIndex].cartItem.every(function (element, index) {
-    console.log(element);
     if (element.quantity > element.branch_quantity) return false;
     else return true;
   });
@@ -211,7 +222,7 @@ const CartScreen = ({navigation,route}) => {
     <ScrollView style={{paddingHorizontal: 16,}} >
           {cartList[selectedIndex]?.cartItem?.map((row, index)=>{
               return(
-                <CartTableRow  key={row.uuid} row={row} handleChangeItemPrice={handleChangeItemPrice} handleChangeItemQuantity={handleChangeItemQuantity} handleDeleteItemCart={handleDeleteItemCart}/>
+                <CartTableRow  key={row.uuid} row={row} handleChangeItemPrice={handleChangeItemPrice} handleChangeItemQuantity={handleChangeItemQuantity} handleDeleteItemCart={handleDeleteItemCart} handleUpdateBatches={handleUpdateBatches}/>
               )
           })}
     </ScrollView>

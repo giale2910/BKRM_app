@@ -1,11 +1,12 @@
 import React, {useState} from 'react'
-import {Modal, VStack,HStack,Text,Input,Stack,Button,Radio,Box,View,Divider,PresenceTransition,Center} from 'native-base'
+import {Modal, VStack,HStack,Text,Input,Stack,Button,Radio,Box,View,Divider,PresenceTransition,Center,Checkbox} from 'native-base'
 import {calculateTotalQuantity} from "../../../../../util/util"
 import ThousandInput from '../../../../../components/Input/ThousandInput'
-import purchaseOrderApi from "../../../../../api/purchaseOrderApi";
+import orderApi from "../../../../../api/orderApi";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { TouchableOpacity } from 'react-native';
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 
 const ModalCartSummary = ({selectedIndex,showModal,setShowModal,cartData,total_amount,total_quantity,navigation,suppliers,handleSelectSupplier,handleDelete}) => {
@@ -29,8 +30,6 @@ const handleSearch = (value) => {
   if(selected === true) {setSelected(false)}  
 }
 
-console.log("selected",selected)
-
 const handleConfirm = async() =>{
     let d = moment.now() / 1000;
     let orderTime = moment .unix(d) .format("YYYY-MM-DD HH:mm:ss", { trim: false });
@@ -40,17 +39,17 @@ const handleConfirm = async() =>{
       payment_method: paymentMethod,
       paid_amount: paidAmmount,
       discount: discount.toString(),
-      status: Number(total_amount) - Number(discount) >=  Number(paidAmmount) ? "debt" : "closed",
-     
+      status: Number(total_amount) - Number(discount) >  Number(paidAmmount) ? "debt" : "closed",
       details: cartData.cartItem.map((item) => ({ ...item, discount: "0" })),
       creation_date: orderTime, 
       paid_date: orderTime,
       tax: "0",
       shipping: "0",
-      delivery:isDelivery,
+      delivery:isDelivery
     }
+    console.log("body",body)
     try {
-        let res = await purchaseOrderApi.addInventory(  store_uuid,  branch.uuid,  body );
+        let res = await orderApi.addOrder(store_uuid,  branch.uuid,  body );
         // handlePrint();
         handleDelete(selectedIndex);
         setShowModal(false)
@@ -126,7 +125,7 @@ const handleConfirm = async() =>{
               </HStack>
               <HStack alignItems="center" justifyContent="space-between">
                 <Text fontWeight="medium">Tiền thối</Text>
-                <Text color="blueGray.400">{(total_amount- discount - paidAmmount).toLocaleString()}</Text>
+                <Text color="blueGray.400">{(paidAmmount -(total_amount- discount )).toLocaleString()}</Text>
               </HStack>
               </VStack>
                <Radio.Group defaultValue="cash" value={paymentMethod} onChange={setPaymenMethod} mt={3}>

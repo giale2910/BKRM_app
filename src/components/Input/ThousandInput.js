@@ -35,7 +35,6 @@ const ThousandInput = ({variant,textAlign,isInvalid,value ,handleChange,handleBl
   const [show, setShow] = useState(false);
 
 
-  console.log("value",Number(value).toLocaleString())
   return (
     // <FormControl
     //     isInvalid={ isInvalid }

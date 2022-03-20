@@ -64,14 +64,10 @@ const InventoryOrderScreen = ({navigation}) => {
 
     const loadData = async (page, isRefresh=false) => {
         try {
-            console.log("allooooo")
             const response = await purchaseOrderApi.getAllOfBranch( store_uuid,  branch_uuid,{ page: page,limit: global.limitPerLoad, ...query});
-            console.log("customerList",customerList)
             if(response.data.data.length === 0 || response.data.data.length < global.limitPerLoad ){setEndList(true)}
             if(isRefresh){
-                console.log("hello")
                 setCustomerList(response.data.data); 
-                console.log("customerList",customerList)
                 setPagingState({  page: 1 ,loading:false })
             }else{
  

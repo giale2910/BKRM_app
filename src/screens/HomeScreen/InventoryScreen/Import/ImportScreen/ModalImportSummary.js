@@ -40,7 +40,9 @@ const handleConfirm = async() =>{
       payment_method: paymentMethod,
       paid_amount: paidAmmount,
       discount: discount.toString(),
-      status: Number(total_amount) - Number(discount) >=  Number(paidAmmount) ? "debt" : "closed",
+      // status: Number(total_amount) - Number(discount) >=  Number(paidAmmount) ? "debt" : "closed",
+      status: Number(total_amount) - Number(discount) >  Number(paidAmmount) ? "debt" : "closed",
+
       details: cartData.cartItem.map((item) => ({
         ...item,
         // selectedBatches: item.selectedBatches.map((batch) => ({
@@ -61,6 +63,7 @@ const handleConfirm = async() =>{
     }
  }
 
+
   return (
     <Modal isOpen={showModal} onClose={() => setShowModal(false)} size="lg">
         <Modal.Content maxWidth="350">
@@ -69,7 +72,6 @@ const handleConfirm = async() =>{
           <Modal.Body>
             <HStack >
               <Input 
-
                   w="90%"
                   InputLeftElement={<Box pl={2} pt={5} ><MaterialIcons  name="search"  size={20}  color="grey"  /> </Box>} 
                   InputRightElement={<Box pr={3} pt={5} >{value? <MaterialIcons  name="cancel"  size={20}  color="lightgrey" onPress={()=>{setValue(''); if(selected){setSelected(false)}}}  /> :null} </Box> } 
@@ -103,7 +105,6 @@ const handleConfirm = async() =>{
                     }
                   })}
              </Box>
-        
         </PresenceTransition>:null}
       
             <VStack space={3}  mt={5}>

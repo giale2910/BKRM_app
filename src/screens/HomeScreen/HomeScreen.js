@@ -410,19 +410,23 @@ const HomeScreen = ({ navigation, route }) => {
 
     }catch(err) {
       // alert(JSON.stringify(err))
+      console.log("loadingData error")
     }
   };
 
   const _retrieveDataProduct = async () => {
     try {
       const value = await AsyncStorage.getItem('productData');
+      // console.log("Asynvalue",value.productData.length)
       if (value !== null) {
         const data = JSON.parse(value);
         if (data.user_uuid === user_uuid) {
           dispatch(dataActions.setProduct(data.productData));
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("retrieve error")
+    }
   };
 
 
@@ -439,19 +443,35 @@ const HomeScreen = ({ navigation, route }) => {
         }
         storeData()
       }
-    } catch (error) { }
+    } catch (error) {
+      console.log("stoẻ error")
+     }
   }
 
+  // const remove = async () => {
+  
+  //     try {
+  //         await AsyncStorage.removeItem('productData');
+  //         return true;
+  //     }
+  //     catch(exception) {
+  //         return false;
+  //     }
+  
+  // }
   React.useEffect(() => {
+    // remove()
     loadingData(); 
 
   
   }, [infoDetail.store.uuid]);
 
   React.useEffect(() => {
+    // remove()
     loadingData();
     _retrieveDataProduct();
     _storeDataProduct() 
+
 
   }, []);
 
@@ -461,10 +481,10 @@ const HomeScreen = ({ navigation, route }) => {
       screenOptions={{ drawerStyle: {  width: 235, } }}
       drawerContent={(props) => <CustomDrawerContent {...props} />
     }
-     initialRouteName="Import"
+     initialRouteName="Cart"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng",headerShown: false}}/>
-      <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn",headerShown: false}} />
+      <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn"}} />
       <Drawer.Screen name="InvoiceReturn" component={InvoiceReturn} options={{ title: "Đơn Trả",headerShown: false}}/>
       <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng",headerShown: false}} />
       <Drawer.Screen name="Inventory" component={Inventory} options={{ title: "Sản phẩm",headerShown: false}}/>

@@ -1,11 +1,14 @@
-import React , {useState}from 'react'
-import { VStack, Text, HStack,Stack, Divider,  Avatar,Image,Box, Pressable,Input } from "native-base";
+import React , {useState, useEffect}from 'react'
+import { VStack, Text, HStack,Stack, Divider, Button ,Avatar,Image,Box, Pressable,Input } from "native-base";
 import {TouchableOpacity,StyleSheet} from 'react-native';
 import {formatDate} from '../../util/util'
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import ButtonQuantity from '../Button/ButtonQuantity';
 import ThousandInput from "../Input/ThousandInput"
 import FeatherIcon from "react-native-vector-icons/Feather";
+import AddBatch from "./Import/AddBatch";
+import SelectBatch from "./Import/SelectBatch";
+import MaterialIcons from"react-native-vector-icons/MaterialIcons";
 export const BillTableRow = ({code, name, date, totalCost,color,uuid,handleOnPress }) => {
   return (
     <>
@@ -18,8 +21,8 @@ export const BillTableRow = ({code, name, date, totalCost,color,uuid,handleOnPre
             </VStack>
         </HStack>
         <VStack justifyContent="space-between" alignItems="flex-end" space={2}>
-                <Text fontSize={13} color="grey"> {formatDate(date)} </Text> 
-                <Text fontSize={13} color={color} bold fontWeight={700} fontSize={18}> {totalCost.toLocaleString()} </Text> 
+            <Text fontSize={13} color="grey"> {formatDate(date)} </Text> 
+            <Text fontSize={13} color={color} bold fontWeight={700} fontSize={18}> {totalCost.toLocaleString()} </Text> 
         </VStack>
     </HStack>
     <Divider my="3"/>  
@@ -64,8 +67,71 @@ export const PartnerTableRow = ({img, name, phone, code,score,isSupplier, uuid,h
   )
 }
 
-export const CartTableRow = ({row,handleChangeItemPrice,handleChangeItemQuantity,handleDeleteItemCart}) => {
-  console.log("row",row)
+export const CartTableRow = ({row,handleChangeItemPrice,handleChangeItemQuantity,handleDeleteItemCart,handleUpdateBatches}) => {
+
+  const [openDiscount, setOpenDiscount] = React.useState(false);
+  const handleOpenDiscount = () => {
+    setOpenDiscount(!openDiscount);
+  };
+  //
+  const [selectBatchOpen, setSelectBatchOpen] = useState(false);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+
+ 
+//tam thoi
+  const batch = [{id: 15, product_id: 260, store_id: 5, batch_code: 'L0002', expiry_date: '2022-03-22 00:00:00',branch_id:46,quantity:2},
+  {id: 16, product_id: 260, store_id: 5, batch_code: 'L0003', expiry_date: '2022-03-19 00:00:00',branch_id:46, quantity:5}
+]
+
+  useEffect(() => {
+    // if (row.batches.length >= 1) {
+    //   setSelectedBatches([{ ...row.batches[0], additional_quantity: 0 }]);
+    // }
+    
+      // if (batch.length >= 1) {
+      // setSelectedBatches([{ ...batch[0], additional_quantity: 0 }]);
+    
+  }, []);
+
+  useEffect(() => {
+    let total = 0;
+    selectedBatches.forEach((batch) => {
+      total += Number(batch.additional_quantity);
+    });
+    console.log(total);
+    // updateQuantity(total);
+    handleChangeItemQuantity(row.uuid, total);
+    handleUpdateBatches(row.uuid, selectedBatches);
+  }, [selectedBatches]);
+
+  const handleSelectBatches = (batches) => {
+    const newBatches = [];
+    selectedBatches.forEach((selectedBatch) => {
+      const newBatch = batches.find(
+        (batch) => batch.batch_code === selectedBatch.batch_code
+      );
+      if (newBatch) {
+        newBatches.push({
+          ...selectedBatch,
+          additional_quantity:
+            Number(selectedBatch.additional_quantity) +
+            Number(newBatch.additional_quantity),
+        });
+      } else {
+        newBatches.push(selectedBatch);
+      }
+    });
+    batches.forEach((newBatch) => {
+      if (
+        !newBatches.find((batch) => newBatch.batch_code === batch.batch_code)
+      ) {
+        newBatches.push(newBatch);
+      }
+    });
+    console.log(newBatches);
+    setSelectedBatches(newBatches);
+  };
+
   return (
   <>
     {/* <Box borderWidth="1" borderColor="gray.50" shadow="2"  p="4" rounded="3" my={0.5}> */}
@@ -94,12 +160,44 @@ export const CartTableRow = ({row,handleChangeItemPrice,handleChangeItemQuantity
           {/* <VStack justifyContent="flex-end" alignItems="flex-end"> */}
           <VStack justifyContent="space-between" alignItems="flex-end">
               <FeatherIcon  name='x' size={15} color='grey' onPress={() => handleDeleteItemCart(row.uuid)}/>
-             <ButtonQuantity quantity={row.quantity}  setQuantity={(val)=>handleChangeItemQuantity(row.uuid,val)} uuid={row.uuid} />
+             {/* <ButtonQuantity quantity={row.quantity}  setQuantity={(val)=>handleChangeItemQuantity(row.uuid,val)} uuid={row.uuid} /> */}
+             {row.has_batches? <Text bold mr={2}>{row.quantity}</Text> :<ButtonQuantity quantity={row.quantity}  setQuantity={(val)=>handleChangeItemQuantity(row.uuid,val)} uuid={row.uuid} />}
 
           </VStack>
       </HStack>
+      {row.has_batches ? 
+      <>
+      <HStack my={2}space={2} >
+      <Button variant="subtle"  onPress={() => setSelectBatchOpen(true)}>Chọn lô</Button>
+      </HStack>
+      {selectedBatches.map((batch) => (
+          <>
+          <Box key={batch.id} borderWidth={1} borderColor={batch.is_new ?"primary.500":"secondary.500"} maxW="50%" px={3} py={1} my={1} borderRadius={20}>
+            <HStack>
+              <Text color={batch.is_new ?"primary.500":"secondary.500"}>{ `${  batch?.batch_code ? batch?.batch_code : "Mới" } - ${batch?.expiry_date} - ${batch.additional_quantity}`} </Text>
+              <MaterialIcons name={"delete-forever"} size={20}  color='grey' 
+              onPress={() => {
+              const newBatches = selectedBatches.filter(
+                (selectedBatch) => selectedBatch.id !== batch.id
+              );
+              setSelectedBatches(newBatches);
+            }}/>
+            </HStack>
+          </Box>
      
-     
+      </>
+        // </Tooltip>
+      ))}
+      {selectBatchOpen && (
+          <SelectBatch
+            handleSubmit={handleSelectBatches}
+            row={row}
+            handleClose={() => setSelectBatchOpen(false)}
+          />
+        )}
+
+      </>
+      :null}
      </Box>
        <Divider  /> 
        
@@ -108,7 +206,59 @@ export const CartTableRow = ({row,handleChangeItemPrice,handleChangeItemQuantity
 }
 
 
-export const ImportTableRow = ({row,handleChangeItemPrice,handleChangeItemQuantity,handleDeleteItemCart}) => {
+export const ImportTableRow = ({row,handleChangeItemPrice,handleChangeItemQuantity,handleDeleteItemCart,handleUpdateBatches}) => {
+  const [selectedBatches, setSelectedBatches] = useState([]);
+
+  const [addBatchOpen, setAddBatchOpen] = useState(false);
+  const [selectBatchOpen, setSelectBatchOpen] = useState(false);
+
+
+  const handleSubmit = (newBatch) => {
+    setSelectedBatches([
+      ...selectedBatches,
+      ...[{ ...newBatch, is_new: true, quantity: 0 , }],
+    ]);
+  };
+  const handleSelectBatches = (batches) => {
+    const newBatches = [];
+    selectedBatches.forEach((selectedBatch) => {
+      const newBatch = batches.find(
+        (batch) => batch.batch_code === selectedBatch.batch_code
+      );
+      if (newBatch) {
+        newBatches.push({
+          ...selectedBatch,
+          additional_quantity:
+            Number(selectedBatch.additional_quantity) +
+            Number(newBatch.additional_quantity),
+        });
+      } else {
+        newBatches.push(selectedBatch);
+      }
+    });
+    batches.forEach((newBatch) => {
+      if (
+        !newBatches.find((batch) => newBatch.batch_code === batch.batch_code)
+      ) {
+        newBatches.push(newBatch);
+      }
+    });
+    setSelectedBatches(newBatches);
+  };
+
+
+  useEffect(() => {
+    let total = 0;
+    selectedBatches.forEach((batch) => {
+      total += Number(batch.additional_quantity);
+    });
+    console.log("total",total)
+    console.log(total)
+    handleUpdateBatches(row.uuid, selectedBatches);
+    handleChangeItemQuantity(row.uuid, total);
+  }, [selectedBatches]);
+
+
   console.log("row",row)
   return (
   <>
@@ -137,13 +287,57 @@ export const ImportTableRow = ({row,handleChangeItemPrice,handleChangeItemQuanti
           </HStack>
           {/* <VStack justifyContent="flex-end" alignItems="flex-end"> */}
           <VStack justifyContent="space-between" alignItems="flex-end">
-          <FeatherIcon  name='x' size={15} color='grey' onPress={() => handleDeleteItemCart(row.uuid)}/>
-
-             <ButtonQuantity quantity={row.quantity}  setQuantity={(val)=>handleChangeItemQuantity(row.uuid,val)} uuid={row.uuid} />
+             
+             <FeatherIcon  name='x' size={15} color='grey' onPress={() => handleDeleteItemCart(row.uuid)}/>
+             
+             {row.has_batches? <Text bold mr={2}>{row.quantity}</Text> :<ButtonQuantity quantity={row.quantity}  setQuantity={(val)=>handleChangeItemQuantity(row.uuid,val)} uuid={row.uuid} />}
 
           </VStack>
       </HStack>
-     
+      {row.has_batches ? 
+        <>
+          <HStack mt={2}space={2}>
+            <Button variant="subtle"  onPress={() => setSelectBatchOpen(true)}>Chọn lô</Button>
+            <Button  variant="subtle" onPress={() => setAddBatchOpen(true)}>Tạo lô</Button>
+              {addBatchOpen && (
+                <AddBatch
+                  handleSubmit={handleSubmit}
+                  handleClose={() => setAddBatchOpen(false)}
+                  row={row}
+                />
+              )}
+              {selectBatchOpen && (
+                <SelectBatch
+                  handleSubmit={handleSelectBatches}
+                  row={row}
+                  handleClose={() => setSelectBatchOpen(false)}
+                />
+              )}
+          </HStack>
+ 
+          {selectedBatches.map((batch) => (
+                // <Tooltip title={`Tồn kho - ${batch.quantity}`}>
+                <>
+                  <Box key={batch.id} borderWidth={1} borderColor={batch.is_new ?"primary.500":"secondary.500"} maxW="50%" px={3} py={1} my={1} borderRadius={20}>
+                    <HStack>
+                      <Text color={batch.is_new ?"primary.500":"secondary.500"}>{ `${  batch?.batch_code ? batch?.batch_code : "Mới" } - ${batch?.expiry_date} - ${batch.additional_quantity}`} </Text>
+                      <MaterialIcons name={"delete-forever"} size={20}  color='grey' 
+                      onPress={() => {
+                      const newBatches = selectedBatches.filter(
+                        (selectedBatch) => selectedBatch.id !== batch.id
+                      );
+                      setSelectedBatches(newBatches);
+                    }}/>
+                    </HStack>
+                  </Box>
+             
+              </>
+                // </Tooltip>
+              ))}
+    
+
+
+        </>:null}
      
      </Box>
        <Divider  /> 
@@ -154,7 +348,6 @@ export const ImportTableRow = ({row,handleChangeItemPrice,handleChangeItemQuanti
 
 
 export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPress, uuid,isSelect}) => {
- 
   return (
     <>
     <TouchableOpacity   key={uuid} onPress={handleOnPress} >

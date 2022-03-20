@@ -19,7 +19,6 @@ const ButtonQuantity = ({quantity,setQuantity, limit, isReturn,branch_quantity, 
 
         else if(limit) {
             if(quantity >= Number(limit)) {
-            console.log('true')
             setQuantity(quantity)
             return
             } 

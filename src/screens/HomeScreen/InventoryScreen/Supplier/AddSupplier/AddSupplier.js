@@ -119,7 +119,6 @@ const AddSupplier = ({navigation, route}) => {
                     store_uuid,
                     bodyFormData
                   );
-                  console.log("hello2")
                 navigation.goBack()
                 //   dispatch(statusAction.successfulStatus("Tạo nhà cung cấp thành công"));
             }else{
