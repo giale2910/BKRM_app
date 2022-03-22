@@ -8,7 +8,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import AntDesignIcon from "react-native-vector-icons/AntDesign";
 
-import {StyleSheet, ScrollView } from 'react-native';
+import {StyleSheet, ScrollView,FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import productApi from "../../api/productApi";
 
@@ -19,12 +19,35 @@ import {ProductTableRow} from "../../components/TableRow/TableRow"
 const SearchScreen = ({navigation, route}) => {
   const {navcartList,selectedIndex, isCart} = route.params;
 
-  const [cartList, setCartList] = React.useState(navcartList);
   const productData  = useSelector((state) => state.data.product);
   const [productList, setProductList] = useState(productData); 
 
   // redux
 
+  
+  const user_uuid = useSelector((state) => state.info.user.uuid);
+
+  const [cartList, setCartList] = React.useState(navcartList);
+
+  // useEffect(()=>{
+  //   const _retrieveSaleCart = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem('saleCart');
+  //       // console.log("Asynvalue",value.productData.length)
+  //       if (value !== null) {
+  //         const data = JSON.parse(value);
+  //         if (data.user_uuid === user_uuid) {
+  //           console.log("data",data)
+  //           setCartList(data)
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log("retrieve error",error)
+  //     }
+  //   };
+
+  //   _retrieveSaleCart()
+  // },[])
   const handleSelect = (selectedOption) => {
     console.log("selectedOption.has_batches ", selectedOption.has_batches)
     let itemIndex = cartList[selectedIndex].cartItem.findIndex(
@@ -56,10 +79,14 @@ const SearchScreen = ({navigation, route}) => {
         selectedBatches:[],
       };
   
-      let newCartList = update(cartList, {
-        [selectedIndex]: { cartItem: { $push: [newCartItem] } },
-      });
-      setCartList(newCartList);
+      // let newCartList = update(cartList, {
+      //   [selectedIndex]: { cartItem: { $push: [newCartItem] } },
+      // });
+      // setCartList(newCartList);
+      let newCartList = [...cartList];
+      newCartList[selectedIndex].cartItem.push(newCartItem)
+
+
       return
     } 
     let item = cartList[selectedIndex].cartItem.find(
@@ -67,10 +94,13 @@ const SearchScreen = ({navigation, route}) => {
     );
 
     if (!item.has_batches) {
-      let newCartList = update(cartList, {
-        [selectedIndex]: {  cartItem: { [itemIndex]: { quantity: { $set: cartList[selectedIndex]?.cartItem[itemIndex]?.quantity + 1 } } },},
-      });
-      setCartList(newCartList);
+      // let newCartList = update(cartList, {
+      //   [selectedIndex]: {  cartItem: { [itemIndex]: { quantity: { $set: cartList[selectedIndex]?.cartItem[itemIndex]?.quantity + 1 } } },},
+      // });
+      // setCartList(newCartList);
+
+      let newCartList = [...cartList];
+      newCartList[selectedIndex].cartItem[itemIndex].quantity +=   1
     }
   
 
@@ -103,18 +133,22 @@ const SearchScreen = ({navigation, route}) => {
         batches: [],
       };
 
-      let newCartList = update(cartList, {
-        [selectedIndex]: { cartItem: { $push: [newCartItem] } },
-      });
-      setCartList(newCartList);
+      // let newCartList = update(cartList, {
+      //   [selectedIndex]: { cartItem: { $push: [newCartItem] } },
+      // });
+      // setCartList(newCartList);
+      let newCartList = [...cartList];
+      newCartList[selectedIndex].cartItem.push(newCartItem)
       return;
     }
 
     if (!item.has_batches) {
-      let newCartList = update(cartList, {
-        [selectedIndex]: {  cartItem: { [itemIndex]: { quantity: { $set: cartList[selectedIndex]?.cartItem[itemIndex]?.quantity + 1 } } },},
-      });
-      setCartList(newCartList);
+      // let newCartList = update(cartList, {
+      //   [selectedIndex]: {  cartItem: { [itemIndex]: { quantity: { $set: cartList[selectedIndex]?.cartItem[itemIndex]?.quantity + 1 } } },},
+      // });
+      // setCartList(newCartList);
+      let newCartList = [...cartList];
+      newCartList[selectedIndex].cartItem[itemIndex].quantity  += 1  
     }else {
         if (
           cartList[selectedIndex].cartItem[itemIndex].selectedBatches?.length ===
@@ -124,16 +158,23 @@ const SearchScreen = ({navigation, route}) => {
           //   selectedOption.uuid,
           //   cartList[selectedIndex].cartItem[itemIndex].quantity + 1
           // );
-          let newCartList = update(cartList, {
-            [selectedIndex]: {  cartItem: { [itemIndex]: { quantity: { $set: cartList[selectedIndex]?.cartItem[itemIndex]?.quantity + 1 } } },},
-          });
+          // let newCartList = update(cartList, {
+          //   [selectedIndex]: {  cartItem: { [itemIndex]: { quantity: { $set: cartList[selectedIndex]?.cartItem[itemIndex]?.quantity + 1 } } },},
+          // });
+
+          // newCartList[selectedIndex].cartItem[
+          //   itemIndex
+          // ].selectedBatches[0].additional_quantity += 1;
+          // setCartList(newCartList);
+        }
+
+
+          let newCartList = [...cartList];
+          newCartList[selectedIndex].cartItem[itemIndex].quantity += 1  
+          newCartList[selectedIndex].cartItem[itemIndex].selectedBatches[0].additional_quantity  += 1  
 
           // const newCartList = [...cartList];
-          newCartList[selectedIndex].cartItem[
-            itemIndex
-          ].selectedBatches[0].additional_quantity += 1;
-          setCartList(newCartList);
-        }
+         
       }
 
     // };
@@ -141,8 +182,7 @@ const SearchScreen = ({navigation, route}) => {
   };
 
 
-  const itemSelect = cartList[selectedIndex].cartItem.map((item) => ( {uuid: item.uuid, quantity: item.quantity}))
-
+  // const itemSelect = cartList[selectedIndex].cartItem.map((item) => ( {uuid: item.uuid, quantity: item.quantity}))
 
   const setSearchResult = (searchKey) =>{
     if(searchKey){
@@ -153,6 +193,16 @@ const SearchScreen = ({navigation, route}) => {
     }
   }
 
+  const renderItem = (row, index) =>{
+    return(
+    <ProductTableRow key={row.uuid} 
+    // isSelect={itemSelect.find( item => item['uuid'] === row.uuid) }
+    isSelect={cartList[selectedIndex].cartItem.find( item => item['uuid'] === row.uuid) }
+    img={row.img_url } name={row.name}code={row.product_code} price={(isCart ? row.list_price:row.standard_price).toLocaleString()}branch_quantity={row.branch_quantity} uuid={row.uuid} handleOnPress={()=>{isCart?handleSelectCart(row):handleSelect(row)}}
+    
+    />
+    )
+  }
 
   return (
     <>
@@ -169,17 +219,26 @@ const SearchScreen = ({navigation, route}) => {
               /> 
               {!isCart?<MaterialIcons  name="add"  size={25}   onPress={() => navigation.navigate("AddInventory", { name: "Jane" })} /> :null}   
       </HStack>
-
+{/* 
     <ScrollView style={{padding:18, marginTop:-20}}>
       {productList.map(((row, index) => {
         // console.log("rowwwwwww", row.batches)
         return(
           <ProductTableRow key={row.uuid} 
-          isSelect={itemSelect.find( item => item['uuid'] === row.uuid) }
+          // isSelect={itemSelect.find( item => item['uuid'] === row.uuid) }
+          isSelect={cartList[selectedIndex].cartItem.find( item => item['uuid'] === row.uuid) }
           img={row.img_url } name={row.name}code={row.product_code} price={(isCart ? row.list_price:row.standard_price).toLocaleString()}branch_quantity={row.branch_quantity} uuid={row.uuid} handleOnPress={()=>{isCart?handleSelectCart(row):handleSelect(row)}}/>
         )
       } ))}
-    </ScrollView>
+    </ScrollView> */}
+    <FlatList
+    style={{padding:18}}
+      data={productList}
+      renderItem={({ item, index }) => renderItem(item, index)}
+      keyExtractor={(item, index) => item.uuid.toString()}
+    />
+
+    
 </>
   )
 }

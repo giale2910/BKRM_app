@@ -22,7 +22,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import MaterialCommunityIcons  from "react-native-vector-icons/MaterialCommunityIcons";
 
-import {StyleSheet, ScrollView } from 'react-native';
+import {StyleSheet, ScrollView ,FlatList} from 'react-native';
 import ChangeCartBtn from "../../../../../components/Button/ChangeCartBtn"
 
 import update from "immutability-helper";
@@ -73,12 +73,12 @@ const CartScreen = ({navigation,route}) => {
 
 
 
-  // 2. Get new cart after search
-  useEffect(() => {
-    if (route.params?.newCart) {
-      setCartList(route.params.newCart)
-    }
-  }, [route.params?.newCart]);
+  // // 2. Get new cart after search
+  // useEffect(() => {
+  //   if (route.params?.newCart) {
+  //     setCartList(route.params.newCart)
+  //   }
+  // }, [route.params?.newCart]);
 
 
 
@@ -192,6 +192,12 @@ const CartScreen = ({navigation,route}) => {
   const total_quantity = calculateTotalQuantity(cartList[selectedIndex].cartItem)
   const total_amount = calculateTotalAmount(cartList[selectedIndex].cartItem)
 
+  const renderItem = (row, index) =>{
+    return(
+      <CartTableRow  key={row.uuid} row={row} handleChangeItemPrice={handleChangeItemPrice} handleChangeItemQuantity={handleChangeItemQuantity} handleDeleteItemCart={handleDeleteItemCart} handleUpdateBatches={handleUpdateBatches}/>
+
+    )
+  }
   return (
     <Box bg='white' flex={1}>
     <NavBar  navigation={navigation} title={"Giỏ hàng"} number={selectedIndex} >
@@ -208,6 +214,8 @@ const CartScreen = ({navigation,route}) => {
     </NavBar>
     <Center mt={-3} mb={2} >
         <Pressable onPress={() =>  navigation.navigate('SearchScreen', { navcartList:cartList,selectedIndex:selectedIndex ,isCart:true}) }>   
+        {/* <Pressable onPress={() =>  navigation.navigate('SearchScreen', { selectedIndex:selectedIndex ,isCart:true}) }>    */}
+
             <Box borderWidth="1"  borderColor="coolGray.200"borderRadius="20" w="92%" h="12" justifyContent="center" px="2">
                 <HStack >
                   <MaterialIcons  name="search"  size={25}  color="grey" /> 
@@ -219,13 +227,20 @@ const CartScreen = ({navigation,route}) => {
             </Box>
         </Pressable>
     </Center>
-    <ScrollView style={{paddingHorizontal: 16,}} >
+    {/* <ScrollView style={{paddingHorizontal: 16,}} >
           {cartList[selectedIndex]?.cartItem?.map((row, index)=>{
               return(
                 <CartTableRow  key={row.uuid} row={row} handleChangeItemPrice={handleChangeItemPrice} handleChangeItemQuantity={handleChangeItemQuantity} handleDeleteItemCart={handleDeleteItemCart} handleUpdateBatches={handleUpdateBatches}/>
               )
           })}
-    </ScrollView>
+    </ScrollView> */}
+
+    <FlatList
+      style={{paddingHorizontal:16,}}
+      data={cartList[selectedIndex]?.cartItem }
+      renderItem={({ item, index }) => renderItem(item, index)}
+      keyExtractor={(item, index) => item.uuid.toString()}
+    />
 
     <Divider />
     <HStack alignItems="center" justifyContent="space-between" m={3}mt={5}>

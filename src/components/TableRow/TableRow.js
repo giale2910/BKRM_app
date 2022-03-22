@@ -348,9 +348,11 @@ export const ImportTableRow = ({row,handleChangeItemPrice,handleChangeItemQuanti
 
 
 export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPress, uuid,isSelect}) => {
+
+  const [count, setCount ]  = useState(isSelect?.quantity ? isSelect?.quantity: 0 )
   return (
     <>
-    <TouchableOpacity   key={uuid} onPress={handleOnPress} >
+    <TouchableOpacity   key={uuid} onPress={()=>{handleOnPress() ; setCount(count + 1)}} >
       <HStack justifyContent="space-between" >
           <HStack w="60%">
               <Image source={{ uri: img  }} alt={"name"}borderRadius="10" size="sm" />
@@ -362,7 +364,12 @@ export const ProductTableRow = ({img,name,code,price,branch_quantity, handleOnPr
           <VStack justifyContent="space-between" alignItems="flex-end">
                   <Text fontSize={16} color='primary.500' fontWeight="700">  {price.toLocaleString()} </Text>    
                  <HStack alignItems='center'>
-                    {isSelect?<Text fontSize={16} mt="2"color='secondary.500' fontWeight="700">  ( x{isSelect?.quantity}) </Text> :null}    
+                    {/* {isSelect?<Text fontSize={16} mt="2"color='secondary.500' fontWeight="700">  ( x{isSelect?.quantity}) </Text> :null}     */}
+                    {/* {isSelect ?<Text fontSize={16} mt="2"color='secondary.500' fontWeight="700">  ( x{count}) </Text> :null}     */}
+
+                    {count !== 0 ?<Text fontSize={16} mt="2"color='secondary.500' fontWeight="700">  ( x{count}) </Text> :null}    
+
+
                     <Text color='grey' mt="2">Tồn: {branch_quantity}</Text>
                     </HStack>
           </VStack>

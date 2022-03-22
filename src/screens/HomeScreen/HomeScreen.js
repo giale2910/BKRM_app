@@ -484,7 +484,7 @@ const HomeScreen = ({ navigation, route }) => {
      initialRouteName="Cart"
     >
       <Drawer.Screen name="Cart" component={Cart}  options={{ title: "Giỏ Hàng",headerShown: false}}/>
-      <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn"}} />
+      <Drawer.Screen name="Invoice" component={Invoice} options={{ title: "Hóa Đơn",headerShown: false}} />
       <Drawer.Screen name="InvoiceReturn" component={InvoiceReturn} options={{ title: "Đơn Trả",headerShown: false}}/>
       <Drawer.Screen name="Import" component={Import}options={{ title: "Nhập Hàng",headerShown: false}} />
       <Drawer.Screen name="Inventory" component={Inventory} options={{ title: "Sản phẩm",headerShown: false}}/>
